@@ -1,0 +1,18 @@
+#set("content") {
+
+<h3>Questions</h3>
+<p>
+Feel free to email us at: oneleifdev@gmail.com
+</p>
+
+#set("eventCard") {
+}
+
+#get(eventCard)
+}
+
+#if(isAuth){
+#embed("authBase")
+} else {
+#embed("base")
+}
