@@ -30,24 +30,24 @@ class UserController: RouteCollection {
     
     // MARK: Request Handlers
     
-    func register(_ req: Request) throws -> Future<Response> {
+    func register(_ req: Request) throws -> Future<HTTPStatus> {
         return try req.content.decode(User.self).flatMap { user in
             return User.query(on: req).filter(\User.username == user.username).first().flatMap { result in
                 if let _ = result {
                     return Future.map(on: req) {
-                        return req.redirect(to: "/register")
+                        return .badRequest
                     }
                 }
                 user.password = try BCryptDigest().hash(user.password)
                 
                 return user.save(on: req).map { _ in
-                    return req.redirect(to: "/login")
+                    return .accepted
                 }
             }
         }
     }
     
-    func login(_ req: Request) throws -> Future<Response> {
+    func login(_ req: Request) throws -> Future<HTTPStatus> {
         return try req.content.decode(User.self).flatMap { user in
             return User.authenticate(
                 username: user.username,
@@ -56,11 +56,11 @@ class UserController: RouteCollection {
                 on: req
             ).map { user in
                 guard let user = user else {
-                    return req.redirect(to: "/login")
+                    return .badRequest
                 }
                 
                 try req.authenticateSession(user)
-                return req.redirect(to: "/home")
+                return .accepted
             }
         }
     }
@@ -75,7 +75,7 @@ class UserController: RouteCollection {
         return try req.content.decode(User.self).flatMap { updatedUser in
             if updatedUser.id != user.id {
                 struct BadAccount: Error {
-                    let desc = "BAD"
+                    let description = "BadAccount"
                 }
                 return req.future(error: BadAccount())
             }
@@ -83,8 +83,8 @@ class UserController: RouteCollection {
         }
     }
     
-    func logout(_ req: Request) throws -> Future<Response> {
+    func logout(_ req: Request) throws -> Future<HTTPStatus> {
         try req.unauthenticateSession(User.self)
-        return Future.map(on: req) { return req.redirect(to: "/login") }
+        return Future.map(on: req) { return .accepted }
     }
 }
