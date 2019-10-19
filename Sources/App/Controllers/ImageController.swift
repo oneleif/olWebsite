@@ -10,7 +10,7 @@ import Imperial
 import Authentication
 
 struct ImageController: RouteCollection {
-    let imageFolder = "ProfilePictures/"
+    let imageFolder = "uploads/"
     
     func boot(router: Router) throws {
         let authSessionRouter = router.grouped(User.authSessionsMiddleware())
@@ -35,11 +35,16 @@ struct ImageController: RouteCollection {
         }
     }
     
-    func getImageHandler(_ req: Request) throws -> Future<Response> {
+    func getImageHandler(_ req: Request) throws -> Future<ImageUpload> {
         let imageName = try req.parameters.next(ImageUpload.self)
         
         let path = try req.make(DirectoryConfig.self).workDir + self.imageFolder + imageName
         
-        return try req.streamFile(at: path)
+        guard let data = FileManager().contents(atPath: path) else {
+            throw Abort(.notFound)
+        }
+        return Future.map(on: req) {
+            ImageUpload(picture: data)
+        }
     }
 }
