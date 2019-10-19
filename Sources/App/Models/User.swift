@@ -9,6 +9,10 @@ import FluentSQLite
 import Vapor
 import Authentication
 
+struct UserData: Content {
+    let id: Int?
+    let username: String
+}
 
 final class User: SQLiteModel {
     var id: Int?
@@ -19,6 +23,12 @@ final class User: SQLiteModel {
         self.id = id
         self.username = username
         self.password = password
+    }
+}
+
+extension User {
+    var userData: UserData {
+        return UserData(id: id, username: username)
     }
 }
 
