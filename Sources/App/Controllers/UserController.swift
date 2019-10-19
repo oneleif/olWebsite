@@ -17,13 +17,10 @@ class UserController: RouteCollection {
         
         
         let authSessionRouter = router.grouped(User.authSessionsMiddleware())
+        
         authSessionRouter.post("login", use: login)
-        
-        let protectedRouter = authSessionRouter.grouped(RedirectMiddleware<User>(path: "/"))
-        
-        protectedRouter.get("profile", use: profile)
-        protectedRouter.post("updateProfile", use: updateProfile)
-        
+        authSessionRouter.get("profile", use: profile)
+        authSessionRouter.post("updateProfile", use: updateProfile)
         
         router.get("logout", use: logout)
     }
