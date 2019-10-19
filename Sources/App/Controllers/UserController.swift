@@ -65,12 +65,12 @@ class UserController: RouteCollection {
         }
     }
     
-    func profile(_ req: Request) throws -> Future<User> {
+    func profile(_ req: Request) throws -> Future<UserData> {
         let user = try req.requireAuthenticated(User.self)
-        return Future.map(on: req) { return user }
+        return Future.map(on: req) { return user.userData }
     }
     
-    func updateProfile(_ req: Request) throws -> Future<(User)> {
+    func updateProfile(_ req: Request) throws -> Future<(UserData)> {
         let user = try req.requireAuthenticated(User.self)
         return try req.content.decode(User.self).flatMap { updatedUser in
             if updatedUser.id != user.id {
@@ -79,7 +79,7 @@ class UserController: RouteCollection {
                 }
                 return req.future(error: BadAccount())
             }
-            return updatedUser.save(on: req)
+            return updatedUser.save(on: req).map { $0.userData }
         }
     }
     
