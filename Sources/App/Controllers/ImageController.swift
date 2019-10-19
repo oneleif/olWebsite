@@ -24,9 +24,9 @@ struct ImageController: RouteCollection {
         return try req.content
             .decode(ImageUpload.self)
             .flatMap { imageData in
-                let workPath = try req.make(DirectoryConfig.self).workDir
                 let name = try "\(user.requireID())-\(UUID().uuidString).jpg"
-                let path = workPath + self.imageFolder + name
+                let path = try self.path(req, forImageNamed: name)
+                
                 FileManager().createFile(atPath: path,
                                          contents: imageData.picture,
                                          attributes: nil)
@@ -38,7 +38,7 @@ struct ImageController: RouteCollection {
     func getImageHandler(_ req: Request) throws -> Future<ImageUpload> {
         let imageName = try req.parameters.next(ImageUpload.self)
         
-        let path = try req.make(DirectoryConfig.self).workDir + self.imageFolder + imageName
+        let path = try self.path(req, forImageNamed: imageName)
         
         guard let data = FileManager().contents(atPath: path) else {
             throw Abort(.notFound)
@@ -46,5 +46,10 @@ struct ImageController: RouteCollection {
         return Future.map(on: req) {
             ImageUpload(picture: data)
         }
+    }
+    
+    private func path(_ req: Request, forImageNamed name: String) throws -> String {
+        let workPath = try req.make(DirectoryConfig.self).workDir
+        return workPath + self.imageFolder + name
     }
 }
