@@ -76,12 +76,12 @@
       ]
     },
     {
-      "name": "uploadImage",
+      "name": "image",
       "item": [
         {
           "name": "Upload Image",
           "request": {
-            "url": "http://localhost:8080/uploadImage",
+            "url": "http://localhost:8080/image",
             "method": "POST",
             "header": [
               {
