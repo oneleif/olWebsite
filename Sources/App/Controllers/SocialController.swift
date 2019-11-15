@@ -31,7 +31,7 @@ class SocialController: RouteCollection {
             return req.future(error: BadUser())
         }
         
-        return req.future(user.social ?? SocialInformation(id: userId))
+        return Future.map(on: req) { user.social ?? SocialInformation(id: userId) }
     }
     
     func updateSocialHandler(_ req: Request) throws -> Future<SocialInformation> {
