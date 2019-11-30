@@ -24,20 +24,7 @@ struct LeafContext: Encodable {
     let user: User?
 }
 
-// struct SolutionsContext: Encodable {
-//     let solutions: [Solution]
-//     let user: User
-//     let title: String
-// }
-
-// struct SolutionContext: Encodable {
-//     let solution: Solution
-//     let user: User
-//     let title: String
-// }
-
 struct HomeContext: Encodable {
     let title: String = "Home"
     let user: User
-    // let userSolutions: [Solution]
 }
