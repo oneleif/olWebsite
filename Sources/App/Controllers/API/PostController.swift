@@ -18,12 +18,12 @@ class PostController: RouteCollection {
     func boot(router: Router) throws {
         let authSessionRouter = router.grouped(User.authSessionsMiddleware())
         
-        authSessionRouter.get("post", PostItem.parameter, use: postHandler)
-        authSessionRouter.get("posts", use: postsHandler)
+        authSessionRouter.get("api", "post", PostItem.parameter, use: postHandler)
+        authSessionRouter.get("api", "posts", use: postsHandler)
         
-        authSessionRouter.post("post", use: addPostHandler)
-        authSessionRouter.put("post", PostItem.parameter, use: updatePost)
-        authSessionRouter.delete("post", PostItem.parameter, use: deletePostHandler)
+        authSessionRouter.post("api", "post", use: addPostHandler)
+        authSessionRouter.put("api", "post", PostItem.parameter, use: updatePost)
+        authSessionRouter.delete("api", "post", PostItem.parameter, use: deletePostHandler)
     }
     
     // MARK: Handlers

@@ -15,8 +15,8 @@ struct ImageController: RouteCollection {
     func boot(router: Router) throws {
         let authSessionRouter = router.grouped(User.authSessionsMiddleware())
         
-        authSessionRouter.post("image", use: uploadImageHandler)
-        authSessionRouter.get("image", ImageUpload.parameter, use: getImageHandler)
+        authSessionRouter.post("api", "image", use: uploadImageHandler)
+        authSessionRouter.get("api", "image", ImageUpload.parameter, use: getImageHandler)
     }
     
     func uploadImageHandler(_ req: Request) throws -> Future<ImageUploadResponse> {

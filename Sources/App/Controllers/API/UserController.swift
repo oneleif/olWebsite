@@ -13,14 +13,14 @@ import Authentication
 class UserController: RouteCollection {
     func boot(router: Router) throws {
         
-        router.post("register", use: register)
+        router.post("api", "register", use: register)
         
         
         let authSessionRouter = router.grouped(User.authSessionsMiddleware())
         
-        authSessionRouter.post("login", use: login)
+        authSessionRouter.post("api", "login", use: login)
         
-        router.get("logout", use: logout)
+        router.get("api", "logout", use: logout)
     }
     
     // MARK: Request Handlers
@@ -34,7 +34,21 @@ class UserController: RouteCollection {
                     }
                 }
                 user.password = try BCryptDigest().hash(user.password)
-                
+                if let id = user.id {
+                    user.social = SocialInformation(id: id,
+                                                    username: user.username,
+                                                    firstName: "",
+                                                    lastName: "",
+                                                    email: "",
+                                                    discordUsername: "",
+                                                    githubUsername: "",
+                                                    tags: [],
+                                                    profileImage: "",
+                                                    biography: "",
+                                                    links: [],
+                                                    location: "")
+                }
+                    
                 return user.save(on: req).map { _ in
                     return .accepted
                 }
