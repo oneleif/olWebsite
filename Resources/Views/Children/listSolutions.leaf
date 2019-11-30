@@ -1,0 +1,69 @@
+
+
+
+#set("content") {
+
+<h1>#(title)</h1>
+
+#for(event in solutions) {
+
+#set("eventCard") {
+<div class="eventBackground">
+<form method="post" action="/updateSolution">
+	<div class="eventCard">
+		<div class="eventTitle">
+        #// Title
+        <div class="form-group">
+            <label for="title">Title</label>
+            <input type="text" name="title" class="form-control"
+                id="title" value=#(event.title) #if(user.id != event.user) {disabled}>
+                </div>
+        #// Description
+        <div class="form-group">
+            <label for="json">JSON Solution</label>
+            <textarea type="text" name="json" class="form-control"
+                id="json" #if(user.id != event.user) {disabled}>#(event.json)</textarea>
+        </div>
+    </div>
+    <div class="eventDetail">
+        <div class="form-group">
+            <label for="level">Author</label>
+            <input type="text" class="form-control" value="#(event.authorName)" disabled>
+                </div>
+
+    <a class="btn btn-warning" href="/solution/#(event.id)">
+    View Solution
+    </a>
+        
+    </div>
+    #// IDs
+    <div class="form-group" hidden>
+        <input type="number" name="user" class="form-control"
+        id="user" value="#(user.id)" step="1">
+        <input type="number" name="id" class="form-control"
+        id="id" value="#(event.id)" step="1">
+		<input type="text" name="authorName" class="form-control"
+		id="authorName" value="#(event.authorName)" step="1">
+    </div>
+    
+    	</div>
+		<div class="updateButtons">
+		#if(user.id == event.user) {
+		<button type="submit" class="btn btn-success">
+		    Update Solution
+		</button>
+		<button type="submit" class="btn btn-danger" formaction="/deleteSolution" formmethod="post">
+		    Delete Solution
+		</button>
+		
+		}
+		
+        
+</form>
+</div>
+}
+#get(eventCard)
+}
+}
+
+#embed("authBase")
