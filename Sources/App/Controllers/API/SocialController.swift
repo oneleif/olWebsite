@@ -18,8 +18,8 @@ class SocialController: RouteCollection {
     func boot(router: Router) throws {
         let authSessionRouter = router.grouped(User.authSessionsMiddleware())
         
-        authSessionRouter.get("social", use: socialHandler)
-        authSessionRouter.post("social", use: updateSocialHandler)
+        authSessionRouter.get("api", "social", use: socialHandler)
+        authSessionRouter.post("api", "social", use: updateSocialHandler)
     }
     
     // MARK: Handlers

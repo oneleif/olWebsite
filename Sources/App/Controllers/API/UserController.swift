@@ -13,14 +13,14 @@ import Authentication
 class UserController: RouteCollection {
     func boot(router: Router) throws {
         
-        router.post("register", use: register)
+        router.post("api", "register", use: register)
         
         
         let authSessionRouter = router.grouped(User.authSessionsMiddleware())
         
-        authSessionRouter.post("login", use: login)
+        authSessionRouter.post("api", "login", use: login)
         
-        router.get("logout", use: logout)
+        router.get("api", "logout", use: logout)
     }
     
     // MARK: Request Handlers
