@@ -1,0 +1,51 @@
+#set("content") {
+
+<h1>#(title)</h1>
+
+
+
+<div class="eventBackground">
+<form method="post" action="/newSolution">
+	<div class="eventCard">
+		<div class="eventTitle">
+        <div class="form-group">
+            <label for="title">Solution Title</label>
+            <input type="text" name="title" class="form-control"
+            id="title">
+        </div>
+        <div class="form-group">
+            <label for="json">Solution JSON</label>
+            <textarea type="json" name="json" class="form-control"
+            id="json"></textarea>
+        </div>
+    </div>
+    <div class="eventDetail">
+        <div class="form-group">
+            <label for="level">Author</label>
+            <input type="text" class="form-control" value="#(user.username)" disabled>
+         </div>
+        
+    </div>
+    #// IDs
+   <div class="form-group" hidden>
+       <input type="number" name="user" class="form-control"
+       id="user" value="#(user.id)" step="1">
+       <input type="text" name="authorName" class="form-control"
+       id="authorName" value="#(user.username)" step="1">
+       <input type="text" name="isSelectedEvent" class="form-control"
+           id="isSelectedEvent" value="false">
+           
+   </div>
+    
+    	</div>
+		<div class="updateButtons">
+		<button type="submit" class="btn btn-primary">
+		    Add Solution
+		</button>
+		</div>
+</form>
+</div>
+
+}
+
+#embed("authBase")
