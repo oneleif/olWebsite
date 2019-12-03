@@ -1,8 +1,4 @@
-
-.eventBackground {
-}
-
-.eventCard {
+.postCard {
 	flex-flow: row wrap;
 	justify-content: space-around;
 	display: flex;
@@ -12,11 +8,11 @@
 	border-style: solid;
 }
 
-.eventTitle {
+.postTitle {
 	order: 0;
 }
 
-.eventDetail {
+.postDetail {
 	order: 1;
 }
 

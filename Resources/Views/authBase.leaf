@@ -10,7 +10,7 @@
     </head>
     <body>
         <nav class="navbar navbar-expand-md navbar-dark bg-dark">
-            <a class="navbar-brand" href="/">Visual</a>
+            <a class="navbar-brand" href="/"><img src="images/logo.png" width=64 height=64></a>
             <button class="navbar-toggler" type="button"
                 data-toggle="collapse" data-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false"
@@ -21,15 +21,11 @@
                 id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item #if(title == "Home"){active}">
-                        <a href="/" class="nav-link">Home</a>
+                        <a href="/dashboard" class="nav-link">Home</a>
                     </li>
-                    <li class="nav-item #if(title == "Solutions"){active}">
-                        <a href="/solutions" class="nav-link">Solutions</a>
+                    <li class="nav-item #if(title == "Posts"){active}">
+                        <a href="/posts" class="nav-link">Posts</a>
                     </li>
-                    <li class="nav-item #if(title == "Add Solution"){active}">
-                        <a href="/newSolution" class="nav-link">Add Solution</a>
-                    </li>
-                    
                 </ul>
                 <ul class="navbar-nav mr-right">
                     <li class="nav-item #if(title == "Logout"){active}">

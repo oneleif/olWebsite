@@ -1,0 +1,69 @@
+#set("content") {
+
+    <h1>#(title)</h1>
+
+    #for(post in posts) {
+        #set("postCard") {
+            <div class="postBackground">
+                <form method="post" action="/updatePost">
+                    <div class="postCard">
+                        <div class="postTitle">
+                            #// Title
+                            <div class="form-group">
+                                <label for="title">Title</label>
+                                <input type="text" name="title" class="form-control"
+                                    id="title" value=#(post.title) #if(user.id != post.user) {disabled}>
+                            </div>
+
+                            #// Description
+                            <div class="form-group">
+                                <label for="json">JSON Post</label>
+                                <textarea type="text" name="json" class="form-control"
+                                    id="json" #if(user.id != post.user) {disabled}>#(post.json)</textarea>
+                            </div>
+                        </div>
+                        <div class="postDetail">
+                            <div class="form-group">
+                                <label for="level">Author</label>
+                                <input type="text" class="form-control" value="#(post.authorName)" disabled>
+                            </div>
+
+                            <a class="btn btn-warning" href="/post/#(post.id)">
+                                View Post
+                            </a>
+                        </div>
+
+                        #// IDs
+                        <div class="form-group" hidden>
+                            <input type="number" name="user" class="form-control"
+                            id="user" value="#(user.id)" step="1">
+                            <input type="number" name="id" class="form-control"
+                            id="id" value="#(post.id)" step="1">
+                            <input type="text" name="authorName" class="form-control"
+                            id="authorName" value="#(post.authorName)" step="1">
+                        </div>
+                    </div>
+
+                    <div class="updateButtons"> 
+                        #if(user.id == post.user) {
+                            <button type="submit" class="btn btn-success">
+                                Update Post
+                            </button>
+                            <button type="submit" class="btn btn-danger" formaction="/deletePost" formmethod="post">
+                                Delete Post
+                            </button>
+                        }
+
+                        <a class="btn btn-warning" href="/post/#(post.id)">
+                            View Post
+                        </a>
+                    </div>
+                </form>
+            </div>
+        }
+
+        #get(postCard)
+    }
+}
+
+#embed("authBase")
