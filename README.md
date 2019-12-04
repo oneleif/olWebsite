@@ -1,4 +1,4 @@
-# oneleif Mobile App
+# oneleif Website and API
 ## olGO
 
 ![](Public/images/homeLogo.png)
