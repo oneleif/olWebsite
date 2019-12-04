@@ -1,7 +1,7 @@
 # oneleif Mobile App
 ## olGO
 
-![](img/olBanner.png)
+![](Public/images/homeLogo.png)
 
 ### Project Info
 
