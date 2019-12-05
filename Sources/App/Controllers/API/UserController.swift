@@ -31,21 +31,19 @@ class UserController: RouteCollection {
                     }
                 }
                 user.password = try BCryptDigest().hash(user.password)
-                if let id = user.id {
-                    user.social = SocialInformation(id: id,
-                                                    username: user.username,
-                                                    firstName: "",
-                                                    lastName: "",
-                                                    email: "",
-                                                    discordUsername: "",
-                                                    githubUsername: "",
-                                                    tags: [],
-                                                    profileImage: "",
-                                                    biography: "",
-                                                    links: [],
-                                                    location: "")
-                }
-                    
+                user.social = SocialInformation(id: user.id,
+                                                username: user.username,
+                                                firstName: "",
+                                                lastName: "",
+                                                email: "",
+                                                discordUsername: "",
+                                                githubUsername: "",
+                                                tags: [],
+                                                profileImage: "",
+                                                biography: "",
+                                                links: [],
+                                                location: "")
+                                                
                 return user.save(on: req).map { _ in
                     return .accepted
                 }
@@ -62,9 +60,9 @@ class UserController: RouteCollection {
                 on: req
             ).map { user in
                 guard let user = user else {
+                    print("bad")
                     return .badRequest
                 }
-                
                 try req.authenticateSession(user)
                 return .accepted
             }

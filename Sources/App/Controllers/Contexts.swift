@@ -1,11 +1,11 @@
 struct LeafContext: Encodable {
     let title: String
-    let user: User?
+    let user: SocialInformation?
 }
 
 struct HomeContext: Encodable {
     let title: String = "Home"
-    let user: User
+    let user: SocialInformation
 }
 
 struct IndexContext: Encodable {
@@ -13,11 +13,13 @@ struct IndexContext: Encodable {
 }
 
 struct PostsContext: Encodable {
-    let posts: [PostItem]
-    let user: User
     let title: String
+    let user: SocialInformation
+    let posts: [PostItem]
 }
 
 struct DashboardContext: Encodable {
     let title: String
+    let user: SocialInformation
+    let posts: [PostItem]
 }
