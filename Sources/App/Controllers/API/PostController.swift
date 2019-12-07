@@ -29,6 +29,7 @@ class PostController: RouteCollection {
     // MARK: Handlers
     
     func addPostHandler(_ req: Request) throws -> Future<PostItem> {
+        print(req)
         return try req.content.decode(PostItem.self)
             .flatMap { post in
                 return PostItem.query(on: req)
@@ -38,7 +39,7 @@ class PostController: RouteCollection {
                         if let _ = result {
                             return req.future(error: BadPost())
                         }
-                        
+                        // req.isClient == Browser
                         return post.save(on: req)
                 }
         }

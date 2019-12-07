@@ -1,0 +1,46 @@
+#set("content") {
+
+    <h1>#(title)</h1>
+
+    <div class="eventBackground">
+        <form method="post" action="/api/post">
+            <div class="eventCard">
+                <div class="eventTitle">
+                    <div class="form-group">
+                        <label>Post Title</label>
+                        <input type="text" name="title" class="form-control" id="title">
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea name="description" class="form-control" id="description"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Content (in Markdown)</label>
+                        <textarea name="content" class="form-control" id="content"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Tags</label>
+                        <textarea name="tags" class="form-control" id="tags"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Resource URL</label>
+                        <textarea name="url" class="form-control" id="url"></textarea>
+                    </div>
+                </div>
+
+                <!-- hidden form content -->
+                <div class="form-group" hidden>
+                    <input type="number" name="author" class="form-control" id="user" value="#(user.id)">
+                </div>
+            </div>
+
+            <div class="updateButtons">
+                <button type="submit" class="btn btn-primary">
+                    Create Post
+                </button>
+            </div>
+        </form>
+    </div>
+}
+
+#embed("authBase")
