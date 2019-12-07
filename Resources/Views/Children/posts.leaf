@@ -16,9 +16,8 @@
 
                             #// Description
                             <div class="form-group">
-                                <label for="json">JSON Post</label>
-                                <textarea type="text" name="json" class="form-control"
-                                    id="json" #if(user.id != post.user) {disabled}>#(post.json)</textarea>
+                                <label for="json">Post Markdown</label>
+                                <textarea type="text" name="markdown" class="form-control" id="markdown" #if(user.id != post.user) {disabled}>#(post.content)</textarea>
                             </div>
                         </div>
                         <div class="postDetail">

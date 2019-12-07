@@ -31,7 +31,9 @@ class UserController: RouteCollection {
                     }
                 }
                 user.password = try BCryptDigest().hash(user.password)
-                user.social = SocialInformation(id: user.id,
+
+                return user.save(on: req).flatMap { user in
+                    user.social = SocialInformation(id: user.id,
                                                 username: user.username,
                                                 firstName: "",
                                                 lastName: "",
@@ -43,9 +45,9 @@ class UserController: RouteCollection {
                                                 biography: "",
                                                 links: [],
                                                 location: "")
-                                                
-                return user.save(on: req).map { _ in
-                    return .accepted
+                    return user.save(on: req).map { _ in
+                        return .accepted
+                    }
                 }
             }
         }
