@@ -39,7 +39,7 @@ class PostController: RouteCollection {
                         if let _ = result {
                             return req.future(error: BadPost())
                         }
-                        
+                        // req.isClient == Browser
                         return post.save(on: req)
                 }
         }

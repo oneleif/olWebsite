@@ -23,7 +23,6 @@ final class PostItem: SQLiteModel {
          description: String,
          author: User.ID,
          tags: String,
-<<<<<<< HEAD
          url: String,
          content: String) {
         self.id = id
@@ -44,8 +43,6 @@ final class PostItem: SQLiteModel {
          description: String,
          author: User.ID,
          tags: [String],
-=======
->>>>>>> 0b51715e508d936f79d6feed4ae31e7b5956cb89
          url: String,
          content: String) {
         self.id = id
