@@ -22,15 +22,22 @@
                         <label>Tags</label>
                         <textarea name="tags" class="form-control" id="tags"></textarea>
                     </div>
+<<<<<<< HEAD
                     <div class="form-group">
                         <label>Resource URL</label>
                         <textarea name="url" class="form-control" id="url"></textarea>
                     </div>
+=======
+>>>>>>> 0b51715e508d936f79d6feed4ae31e7b5956cb89
                 </div>
 
                 <!-- hidden form content -->
                 <div class="form-group" hidden>
                     <input type="number" name="author" class="form-control" id="user" value="#(user.id)">
+<<<<<<< HEAD
+=======
+                    <input type="text" name="url" class="form-control" id="url" value="#(url)">
+>>>>>>> 0b51715e508d936f79d6feed4ae31e7b5956cb89
                 </div>
             </div>
 

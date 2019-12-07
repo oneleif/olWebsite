@@ -57,14 +57,5 @@ class AuthRouteController: RouteCollection {
             return try req.view().render("Children/index", IndexContext(title: "oneleif"))
         }
     }
-
-    // func newSolution(_ req: Request) throws -> Future<Response> {
-    //     return try req.content.decode(PostItem.self).flatMap { solution in
-    //         solution.json = solution.json.replacingOccurrences(of: "\"", with: "")
-    //         return solution.save(on: req).map { _ in
-    //             req.redirect(to: "/")
-    //         }
-    //     }
-    // }
 }
 
