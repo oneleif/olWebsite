@@ -5,19 +5,26 @@ import Authentication
 
 class AuthRouteController: RouteCollection {
     func boot(router: Router) throws {
-
         let authSessionRouter = router.grouped(User.authSessionsMiddleware())
         let protectedRouter = authSessionRouter.grouped(RedirectMiddleware<User>(path: "/login"))
         protectedRouter.get("dashboard", use: dashboardHandler)
         protectedRouter.get("posts", use: listPostsHandler)
+        protectedRouter.get("authIndex", use: authIndexHandler)
         // protectedRouter.get("social")
+    }
+
+    func authIndexHandler(_ req: Request) throws -> Future<View> {
+        print(#function)
+        return PostItem.query(on: req).all().flatMap { (posts) -> Future<View> in
+            let user = try req.requireAuthenticated(User.self)
+            return try req.view().render("Children/authIndex", IndexContext(title: "oneleif"))
+        }
     }
 
     func dashboardHandler(_ req: Request) throws -> Future<View> {
         print(#function)
         return PostItem.query(on: req).all().flatMap { (posts) -> Future<View> in
             let user = try req.requireAuthenticated(User.self)
-            print("dash \(user.id)")
             if let social = user.social {
                 let context = DashboardContext(title: "Welcome to your dashboard", user: social, posts: posts)
                 return try req.view().render("Children/dashboard", context)

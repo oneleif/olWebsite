@@ -20,12 +20,8 @@ class BaseRouteController: RouteCollection {
     func indexHandler(_ req: Request) throws -> Future<View> {
         print(#function)
          return PostItem.query(on: req).all().flatMap { (posts) -> Future<View> in
-            print("Posts: \(posts)")
-            // do {
-            //     return try AuthRouteController().dashboardHandler(req)
-            // } catch {
-                return try req.view().render("Children/index", IndexContext(title: "oneleif"))
-            // }
+            print("/: Posts: \(posts)")
+            return try req.view().render("Children/index", IndexContext(title: "oneleif"))
          }
     }
 
