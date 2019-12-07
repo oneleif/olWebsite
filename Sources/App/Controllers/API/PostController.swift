@@ -29,6 +29,7 @@ class PostController: RouteCollection {
     // MARK: Handlers
     
     func addPostHandler(_ req: Request) throws -> Future<PostItem> {
+        print(req)
         return try req.content.decode(PostItem.self)
             .flatMap { post in
                 return PostItem.query(on: req)

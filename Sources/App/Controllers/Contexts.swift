@@ -18,6 +18,12 @@ struct PostsContext: Encodable {
     let posts: [PostItem]
 }
 
+struct CreatePostContext: Encodable {
+    let title: String
+    let user: SocialInformation
+    let url: String
+}
+
 struct DashboardContext: Encodable {
     let title: String
     let user: SocialInformation

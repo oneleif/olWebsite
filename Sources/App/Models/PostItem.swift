@@ -14,7 +14,7 @@ final class PostItem: SQLiteModel {
     let title: String
     let description: String
     let author: User.ID
-    let tags: [String]
+    let tags: String
     let url: String
     let content: String
     
@@ -22,7 +22,7 @@ final class PostItem: SQLiteModel {
          title: String,
          description: String,
          author: User.ID,
-         tags: [String] = [],
+         tags: String,
          url: String,
          content: String) {
         self.id = id

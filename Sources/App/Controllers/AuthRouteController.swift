@@ -10,20 +10,19 @@ class AuthRouteController: RouteCollection {
         protectedRouter.get("dashboard", use: dashboardHandler)
         protectedRouter.get("posts", use: listPostsHandler)
         protectedRouter.get("authIndex", use: authIndexHandler)
-        // protectedRouter.get("social")
+        protectedRouter.get("createPost", use: createPostHandler)
     }
 
     func authIndexHandler(_ req: Request) throws -> Future<View> {
         print(#function)
-        return PostItem.query(on: req).all().flatMap { (posts) -> Future<View> in
-            let user = try req.requireAuthenticated(User.self)
-            return try req.view().render("Children/authIndex", IndexContext(title: "oneleif"))
-        }
+        let user = try req.requireAuthenticated(User.self)
+        return try req.view().render("Children/authIndex", IndexContext(title: "oneleif"))
     }
 
     func dashboardHandler(_ req: Request) throws -> Future<View> {
         print(#function)
-        return PostItem.query(on: req).all().flatMap { (posts) -> Future<View> in
+        return PostItem.query(on: req).all()
+            .flatMap { (posts) -> Future<View> in
             let user = try req.requireAuthenticated(User.self)
             if let social = user.social {
                 let context = DashboardContext(title: "Welcome to your dashboard", user: social, posts: posts)
@@ -46,6 +45,19 @@ class AuthRouteController: RouteCollection {
                 return try req.view().render("Children/index", IndexContext(title: "oneleif"))
             }
             
+        }
+    }
+
+    func createPostHandler(_ req: Request) throws -> Future<View> {
+        print(#function)
+        let user = try req.requireAuthenticated(User.self)
+        if let social = user.social {
+            print(social)
+            //SOCIAL DOES NOT HAVE ID
+            let context = CreatePostContext(title: "Create Post", user: social, url:"xyz")
+            return try req.view().render("Children/createPost", context) 
+        } else {
+            return try req.view().render("Children/index", IndexContext(title: "oneleif"))
         }
     }
 }
