@@ -57,12 +57,3 @@ final class PostItem: SQLiteModel {
 
 extension PostItem: Content {}
 extension PostItem: Migration {}
-
-extension PostItem: Parameter {
-    typealias ResolvedParameter = String
-    
-    static func resolveParameter(_ parameter: String,
-                                 on container: Container) throws -> ImageUpload.ResolvedParameter {
-        return parameter
-    }
-}

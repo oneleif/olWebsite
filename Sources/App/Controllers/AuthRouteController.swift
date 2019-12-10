@@ -8,9 +8,12 @@ class AuthRouteController: RouteCollection {
         let authSessionRouter = router.grouped(User.authSessionsMiddleware())
         let protectedRouter = authSessionRouter.grouped(RedirectMiddleware<User>(path: "/login"))
         protectedRouter.get("dashboard", use: dashboardHandler)
-        protectedRouter.get("posts", use: listPostsHandler)
+        protectedRouter.get("authPosts", use: listPostsHandler)
         protectedRouter.get("authIndex", use: authIndexHandler)
         protectedRouter.get("createPost", use: createPostHandler)
+        protectedRouter.get("post", Int.parameter, use: viewPostHandler)
+
+        protectedRouter.post("createPostAPI", use: createPostAPIHandler)
     }
 
     func authIndexHandler(_ req: Request) throws -> Future<View> {
@@ -38,8 +41,9 @@ class AuthRouteController: RouteCollection {
         return PostItem.query(on: req).all().flatMap { (posts) -> Future<View> in
             let user = try req.requireAuthenticated(User.self)
             if let social = user.social {
-               let context = PostsContext(title: "Posts", user: social, posts: posts)
-                return try req.view().render("Children/posts", context) 
+                let context = AuthPostsContext(title: "Posts", user: social, posts: posts)
+                // return req.redirect(to: "/login")
+                return try req.view().render("Children/authPosts", context) 
             } else {
                 return try req.view().render("Children/index", IndexContext(title: "oneleif"))
             }
@@ -57,5 +61,50 @@ class AuthRouteController: RouteCollection {
             return try req.view().render("Children/index", IndexContext(title: "oneleif"))
         }
     }
+
+    func createPostAPIHandler(_ req: Request) throws -> Future<Response> {
+        print(#function)
+        let user = try req.requireAuthenticated(User.self)
+
+        if let social = user.social {
+            //Create post
+            return try PostController().addPostHandler(req).map { post in
+                guard let id = post.id else {
+                    return req.redirect(to: "authPosts")
+                }
+                return req.redirect(to: "post/\(id)")
+            }
+        } else {
+             return Future.map(on: req) { 
+                 return req.redirect(to:"Children/index")
+             }
+        }
+    }
+
+    func viewPostHandler(_ req: Request) throws -> Future<View> {
+        print(#function)
+        let user = try req.requireAuthenticated(User.self)
+        guard let postId = try? req.parameters.next(Int.self) else {
+                throw Abort.redirect(to: "authPosts")
+            }
+
+        return PostItem.query(on: req)
+            .filter(\PostItem.id == postId)
+            .first()
+            .flatMap { result in
+            print("2")
+            if let social = user.social,
+                let post = result {
+                    print("3")
+                let context = AuthPostContext(title: "Posts", user: social, post: post)
+                return try req.view().render("Children/authPost", context) 
+            } else {
+                print("4")
+                return try req.view().render("Children/index", IndexContext(title: "oneleif"))
+            }
+        }
+    
+    }
+
 }
 

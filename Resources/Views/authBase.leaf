@@ -24,17 +24,15 @@
                         <a href="/dashboard" class="nav-link">Home</a>
                     </li>
                     <li class="nav-item #if(title == "Posts"){active}">
-                        <a href="/posts" class="nav-link">Posts</a>
+                        <a href="/authPosts" class="nav-link">Posts</a>
+                    </li>
+                    <li class="nav-item #if(title == "CreatePost"){active}">
+                        <a href="/createPost" class="nav-link">Create Post</a>
                     </li>
                 </ul>
                 <ul class="navbar-nav mr-right">
                     <li class="nav-item #if(title == "Logout"){active}">
                         <a href="/logout" class="nav-link">Logout</a>
-                    </li>
-                </ul>
-                <ul class="navbar-nav mr-right">
-                    <li class="nav-item #if(title == "CreatePost"){active}">
-                        <a href="/createPost" class="nav-link">Create Post</a>
                     </li>
                 </ul>
             </div>

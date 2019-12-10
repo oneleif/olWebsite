@@ -18,18 +18,17 @@ class PostController: RouteCollection {
     func boot(router: Router) throws {
         let authSessionRouter = router.grouped(User.authSessionsMiddleware())
         
-        authSessionRouter.get("api", "post", PostItem.parameter, use: postHandler)
+        authSessionRouter.get("api", "post", Int.parameter, use: postHandler)
         authSessionRouter.get("api", "posts", use: postsHandler)
         
         authSessionRouter.post("api", "post", use: addPostHandler)
-        authSessionRouter.put("api", "post", PostItem.parameter, use: updatePost)
-        authSessionRouter.delete("api", "post", PostItem.parameter, use: deletePostHandler)
+        authSessionRouter.put("api", "post", Int.parameter, use: updatePost)
+        authSessionRouter.delete("api", "post", Int.parameter, use: deletePostHandler)
     }
     
     // MARK: Handlers
     
     func addPostHandler(_ req: Request) throws -> Future<PostItem> {
-        print(req)
         return try req.content.decode(PostItem.self)
             .flatMap { post in
                 return PostItem.query(on: req)
@@ -54,7 +53,7 @@ class PostController: RouteCollection {
     
     func postHandler(_ req: Request) throws -> Future<PostItem> {
         _ = try req.requireAuthenticated(User.self)
-        let postId = Int(try req.parameters.next(PostItem.self))
+        let postId = Int(try req.parameters.next(Int.self))
         
         return PostItem.query(on: req)
             .filter(\PostItem.id == postId)
@@ -71,7 +70,7 @@ class PostController: RouteCollection {
     
     func updatePost(_ req: Request) throws -> Future<(PostItem)> {
         let user = try req.requireAuthenticated(User.self)
-        let postId = Int(try req.parameters.next(PostItem.self))
+        let postId = Int(try req.parameters.next(Int.self))
         
         return try req.content.decode(PostItem.self)
             .flatMap { updatedPostItem in
@@ -95,7 +94,7 @@ class PostController: RouteCollection {
     
     func deletePostHandler(_ req: Request) throws -> Future<HTTPStatus> {
         _ = try req.requireAuthenticated(User.self)
-        let postId = Int(try req.parameters.next(PostItem.self))
+        let postId = Int(try req.parameters.next(Int.self))
         
         return PostItem.query(on: req)
             .filter(\PostItem.id == postId)

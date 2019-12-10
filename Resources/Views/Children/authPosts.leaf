@@ -6,21 +6,19 @@
             <div class="postBackground">
                 <div class="postCard">
                     <div class="postTitle">
-                        #// Title
-                        <div class="form-group">
-                            <label for="title">Title</label>
+                        <div>
+                            <label>Title</label>
                             <label>#(post.title)</label>
                         </div>
 
-                        #// Description
-                        <div class="form-group">
-                            <label for="content">Post Markdown</label>
+                        <div>
+                            <label>Post Markdown</label>
                             <label>#(post.content)</label>
                         </div>
                     </div>
                     <div class="postDetail">
-                        <div class="form-group">
-                            <label for="level">Author</label>
+                        <div>
+                            <label>Author</label>
                             <label>#(post.author)</label>
                         </div>
 
@@ -36,4 +34,4 @@
     }
 }
 
-#embed("base")
+#embed("authBase")

@@ -8,6 +8,7 @@ class BaseRouteController: RouteCollection {
         router.get(use: indexHandler)
         router.get("register", use: registerHandler)
         router.get("login", use: loginHandler)
+        router.get("posts", use: postsHandler)
 
         router.post("register", use: register)
         
@@ -20,7 +21,6 @@ class BaseRouteController: RouteCollection {
     func indexHandler(_ req: Request) throws -> Future<View> {
         print(#function)
          return PostItem.query(on: req).all().flatMap { (posts) -> Future<View> in
-            print("/: Posts: \(posts)")
             return try req.view().render("Children/index", IndexContext(title: "oneleif"))
          }
     }
@@ -63,6 +63,14 @@ class BaseRouteController: RouteCollection {
         print(#function)
         try req.unauthenticateSession(User.self)
         return Future.map(on: req) { return req.redirect(to: "/") }
+    }
+
+    func postsHandler(_ req: Request) throws -> Future<View> {
+        print(#function)
+        return PostItem.query(on: req).all().flatMap { (posts) -> Future<View> in
+            let context = PostsContext(title: "Posts", posts: posts)
+            return try req.view().render("Children/posts", context) 
+        }
     }
 }
 

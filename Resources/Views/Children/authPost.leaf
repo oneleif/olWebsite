@@ -1,0 +1,37 @@
+#set("content") {
+    <h1>#(title)</h1>
+
+    #set("postCard") {
+        <div class="postBackground">
+            <div class="postCard">
+                <div class="postTitle">
+                    #// Title
+                    <div>
+                        <label for="title">Title</label>
+                        <p>#(post.title)</p>
+                    </div>
+
+                    #// Description
+                    <div>
+                        <label for="json">Post Markdown</label>
+                        <p>#(post.content)</p>
+                    </div>
+                </div>
+                <div class="postDetail">
+                    <div>
+                        <label for="level">Author</label>
+                        <p>#(post.author)"</p>
+                    </div>
+
+                    <a class="btn btn-warning" href="/post/#(post.id)">
+                        View Post
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+
+    #get(post)
+}
+
+#embed("authBase")

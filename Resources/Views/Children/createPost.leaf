@@ -3,7 +3,7 @@
     <h1>#(title)</h1>
 
     <div class="eventBackground">
-        <form method="post" action="/api/post">
+        <form method="post" action="/createPostAPI">
             <div class="eventCard">
                 <div class="eventTitle">
                     <div class="form-group">
