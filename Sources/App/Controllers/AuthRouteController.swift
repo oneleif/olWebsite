@@ -81,15 +81,19 @@ class AuthRouteController: RouteCollection {
         if let social = user.social {
             //Create post
             return try PostController().addPostHandler(req).map { post in
+                print("after addPostHandler")
                 guard let id = post.id else {
+                    print("could not get post id")
                     return req.redirect(to: "authPosts")
                 }
+                print("redirect to post")
                 return req.redirect(to: "post/\(id)")
             }
         } else {
-             return Future.map(on: req) { 
-                 return req.redirect(to:"Children/index")
-             }
+            print("could not get user social")
+            return Future.map(on: req) { 
+                return req.redirect(to:"Children/index")
+            }
         }
     }
 
@@ -97,8 +101,9 @@ class AuthRouteController: RouteCollection {
         print(#function)
         let user = try req.requireAuthenticated(User.self)
         guard let postId = try? req.parameters.next(Int.self) else {
-                throw Abort.redirect(to: "authPosts")
-            }
+            print("viewPost Abort")
+            throw Abort.redirect(to: "authIndex")
+        }
 
         return PostItem.query(on: req)
             .filter(\PostItem.id == postId)
@@ -107,8 +112,8 @@ class AuthRouteController: RouteCollection {
             print("2")
             if let social = user.social,
                 let post = result {
-                    print("3")
-                let context = AuthPostContext(title: "Posts", user: social, post: post)
+                print("3")
+                let context = AuthPostContext(title: "Post", user: social, post: post)
                 return try req.view().render("Children/authPost", context) 
             } else {
                 print("4")
