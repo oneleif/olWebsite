@@ -12,6 +12,7 @@ class AuthRouteController: RouteCollection {
         protectedRouter.get("authIndex", use: authIndexHandler)
         protectedRouter.get("createPost", use: createPostHandler)
         protectedRouter.get("post", Int.parameter, use: viewPostHandler)
+        protectedRouter.get("social", use: socialHandler)
 
         protectedRouter.post("createPostAPI", use: createPostAPIHandler)
     }
@@ -20,6 +21,17 @@ class AuthRouteController: RouteCollection {
         print(#function)
         let user = try req.requireAuthenticated(User.self)
         return try req.view().render("Children/authIndex", IndexContext(title: "oneleif"))
+    }
+
+    func socialHandler(_ req: Request) throws -> Future<View> {
+        print(#function)
+        let user = try req.requireAuthenticated(User.self)
+        if let social = user.social {
+            return try req.view().render("Children/social", SocialContext(title: "Your account", user: social))
+        } else {
+            return try req.view().render("Children/index", IndexContext(title: "oneleif"))
+        }
+        
     }
 
     func dashboardHandler(_ req: Request) throws -> Future<View> {

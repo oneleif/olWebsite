@@ -31,6 +31,9 @@
                     </li>
                 </ul>
                 <ul class="navbar-nav mr-right">
+                    <li class="nav-item #if(title == "Account"){active}">
+                        <a href="/social" class="nav-link">Account</a>
+                    </li>
                     <li class="nav-item #if(title == "Logout"){active}">
                         <a href="/logout" class="nav-link">Logout</a>
                     </li>

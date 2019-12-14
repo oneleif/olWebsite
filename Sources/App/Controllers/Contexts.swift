@@ -39,3 +39,8 @@ struct DashboardContext: Encodable {
     let user: SocialInformation
     let posts: [PostItem]
 }
+
+struct SocialContext: Encodable {
+    let title: String
+    let user: SocialInformation
+}
