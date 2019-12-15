@@ -18,12 +18,12 @@ class PostController: RouteCollection {
     func boot(router: Router) throws {
         let authSessionRouter = router.grouped(User.authSessionsMiddleware())
         
-        authSessionRouter.get("api", "post", Int.parameter, use: postHandler)
+        authSessionRouter.get("api", "post", PostItem.parameter, use: postHandler)
         authSessionRouter.get("api", "posts", use: postsHandler)
         
         authSessionRouter.post("api", "post", use: addPostHandler)
-        authSessionRouter.put("api", "post", Int.parameter, use: updatePost)
-        authSessionRouter.delete("api", "post", Int.parameter, use: deletePostHandler)
+        authSessionRouter.put("api", "post", PostItem.parameter, use: updatePost)
+        authSessionRouter.delete("api", "post", PostItem.parameter, use: deletePostHandler)
     }
     
     // MARK: Handlers
@@ -38,7 +38,6 @@ class PostController: RouteCollection {
                         if let _ = result {
                             return req.future(error: BadPost())
                         }
-                        // req.isClient == Browser
                         return post.save(on: req)
                 }
         }

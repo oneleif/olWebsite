@@ -62,7 +62,6 @@ class UserController: RouteCollection {
                 on: req
             ).map { user in
                 guard let user = user else {
-                    print("bad")
                     return .badRequest
                 }
                 try req.authenticateSession(user)
