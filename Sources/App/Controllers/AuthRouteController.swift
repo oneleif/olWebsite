@@ -11,7 +11,7 @@ class AuthRouteController: RouteCollection {
         protectedRouter.get("authPosts", use: listPostsHandler)
         protectedRouter.get("authIndex", use: authIndexHandler)
         protectedRouter.get("createPost", use: createPostHandler)
-        protectedRouter.get("post", PostItem.parameter, use: viewPostHandler)
+        protectedRouter.get("viewPost", PostItem.parameter, use: viewPostHandler)
         protectedRouter.get("social", use: socialHandler)
 
         protectedRouter.post("createPostAPI", use: createPostAPIHandler)
@@ -81,16 +81,12 @@ class AuthRouteController: RouteCollection {
         if let social = user.social {
             //Create post
             return try PostController().addPostHandler(req).map { post in
-                print("after addPostHandler")
                 guard let id = post.id else {
-                    print("could not get post id")
                     return req.redirect(to: "authPosts")
                 }
-                print("redirect to post")
-                return req.redirect(to: "post/\(id)")
+                return req.redirect(to: "viewPost/\(id)")
             }
         } else {
-            print("could not get user social")
             return Future.map(on: req) { 
                 return req.redirect(to:"Children/index")
             }
@@ -102,13 +98,10 @@ class AuthRouteController: RouteCollection {
         let user = try req.requireAuthenticated(User.self)
         return try req.parameters.next(PostItem.self)
             .flatMap { post in
-            print("2")
             if let social = user.social {
-                print("3")
                 let context = AuthPostContext(title: "Post", user: social, post: post)
                 return try req.view().render("Children/authPost", context) 
             } else {
-                print("4")
                 return try req.view().render("Children/index", IndexContext(title: "oneleif"))
             }
         }

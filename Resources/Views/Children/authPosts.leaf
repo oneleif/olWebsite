@@ -22,7 +22,7 @@
                             <label>#(post.author)</label>
                         </div>
 
-                        <a class="btn btn-warning" href="/post/#(post.id)">
+                        <a class="btn btn-warning" href="/viewPost/#(post.id)">
                             View Post
                         </a>
                     </div>
