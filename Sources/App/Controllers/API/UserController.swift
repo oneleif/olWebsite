@@ -12,12 +12,9 @@ import Authentication
 
 class UserController: RouteCollection {
     func boot(router: Router) throws {
-        
         router.post("api", "register", use: register)
         
-        
         let authSessionRouter = router.grouped(User.authSessionsMiddleware())
-        
         authSessionRouter.post("api", "login", use: login)
         
         router.get("api", "logout", use: logout)
@@ -34,23 +31,23 @@ class UserController: RouteCollection {
                     }
                 }
                 user.password = try BCryptDigest().hash(user.password)
-                if let id = user.id {
-                    user.social = SocialInformation(id: id,
-                                                    username: user.username,
-                                                    firstName: "",
-                                                    lastName: "",
-                                                    email: "",
-                                                    discordUsername: "",
-                                                    githubUsername: "",
-                                                    tags: [],
-                                                    profileImage: "",
-                                                    biography: "",
-                                                    links: [],
-                                                    location: "")
-                }
-                    
-                return user.save(on: req).map { _ in
-                    return .accepted
+
+                return user.save(on: req).flatMap { user in
+                    user.social = SocialInformation(id: user.id,
+                                                username: user.username,
+                                                firstName: "",
+                                                lastName: "",
+                                                email: "",
+                                                discordUsername: "",
+                                                githubUsername: "",
+                                                tags: [],
+                                                profileImage: "",
+                                                biography: "",
+                                                links: [],
+                                                location: "")
+                    return user.save(on: req).map { _ in
+                        return .accepted
+                    }
                 }
             }
         }
@@ -67,7 +64,6 @@ class UserController: RouteCollection {
                 guard let user = user else {
                     return .badRequest
                 }
-                
                 try req.authenticateSession(user)
                 return .accepted
             }

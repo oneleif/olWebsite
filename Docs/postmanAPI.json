@@ -12,13 +12,15 @@
           "request": {
             "method": "POST",
             "url": {
-              "raw": "http://localhost:8080/api/register",
+              "raw": "https://oneleif-olwebsite.vapor.cloud/api/register",
               "query": null,
-              "protocol": "http",
+              "protocol": "https",
               "host": [
-                "localhost"
+                "oneleif-olwebsite",
+                "vapor",
+                "cloud"
               ],
-              "port": "8080",
+              "port": null,
               "path": [
                 "api",
                 "register"
@@ -52,13 +54,15 @@
           "request": {
             "method": "POST",
             "url": {
-              "raw": "http://localhost:8080/api/login",
+              "raw": "https://oneleif-olwebsite.vapor.cloud/api/login",
               "query": null,
-              "protocol": "http",
+              "protocol": "https",
               "host": [
-                "localhost"
+                "oneleif-olwebsite",
+                "vapor",
+                "cloud"
               ],
-              "port": "8080",
+              "port": null,
               "path": [
                 "api",
                 "login"
@@ -92,13 +96,15 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "http://localhost:8080/api/logout",
+              "raw": "https://oneleif-olwebsite.vapor.cloud/api/logout",
               "query": null,
-              "protocol": "http",
+              "protocol": "https",
               "host": [
-                "localhost"
+                "oneleif-olwebsite",
+                "vapor",
+                "cloud"
               ],
-              "port": "8080",
+              "port": null,
               "path": [
                 "api",
                 "logout"
@@ -128,13 +134,15 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "http://localhost:8080/api/social",
+              "raw": "https://oneleif-olwebsite.vapor.cloud/api/social",
               "query": null,
-              "protocol": "http",
+              "protocol": "https",
               "host": [
-                "localhost"
+                "oneleif-olwebsite",
+                "vapor",
+                "cloud"
               ],
-              "port": "8080",
+              "port": null,
               "path": [
                 "api",
                 "social"
@@ -168,13 +176,15 @@
           "request": {
             "method": "POST",
             "url": {
-              "raw": "http://localhost:8080/api/social",
+              "raw": "https://oneleif-olwebsite.vapor.cloud/api/social",
               "query": null,
-              "protocol": "http",
+              "protocol": "https",
               "host": [
-                "localhost"
+                "oneleif-olwebsite",
+                "vapor",
+                "cloud"
               ],
-              "port": "8080",
+              "port": null,
               "path": [
                 "api",
                 "social"
@@ -215,13 +225,15 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "http://localhost:8080/api/posts",
+              "raw": "https://oneleif-olwebsite.vapor.cloud/api/posts",
               "query": null,
-              "protocol": "http",
+              "protocol": "https",
               "host": [
-                "localhost"
+                "oneleif-olwebsite",
+                "vapor",
+                "cloud"
               ],
-              "port": "8080",
+              "port": null,
               "path": [
                 "api",
                 "posts"
@@ -255,13 +267,15 @@
           "request": {
             "method": "POST",
             "url": {
-              "raw": "http://localhost:8080/api/post",
+              "raw": "https://oneleif-olwebsite.vapor.cloud/api/post",
               "query": null,
-              "protocol": "http",
+              "protocol": "https",
               "host": [
-                "localhost"
+                "oneleif-olwebsite",
+                "vapor",
+                "cloud"
               ],
-              "port": "8080",
+              "port": null,
               "path": [
                 "api",
                 "post"
@@ -295,13 +309,15 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "http://localhost:8080/api/post/1",
+              "raw": "https://oneleif-olwebsite.vapor.cloud/api/post/1",
               "query": null,
-              "protocol": "http",
+              "protocol": "https",
               "host": [
-                "localhost"
+                "oneleif-olwebsite",
+                "vapor",
+                "cloud"
               ],
-              "port": "8080",
+              "port": null,
               "path": [
                 "api",
                 "post",
@@ -336,13 +352,15 @@
           "request": {
             "method": "PUT",
             "url": {
-              "raw": "http://localhost:8080/api/post/1",
+              "raw": "https://oneleif-olwebsite.vapor.cloud/api/post/1",
               "query": null,
-              "protocol": "http",
+              "protocol": "https",
               "host": [
-                "localhost"
+                "oneleif-olwebsite",
+                "vapor",
+                "cloud"
               ],
-              "port": "8080",
+              "port": null,
               "path": [
                 "api",
                 "post",
@@ -377,13 +395,15 @@
           "request": {
             "method": "DELETE",
             "url": {
-              "raw": "http://localhost:8080/api/post/1",
+              "raw": "https://oneleif-olwebsite.vapor.cloud/api/post/1",
               "query": null,
-              "protocol": "http",
+              "protocol": "https",
               "host": [
-                "localhost"
+                "oneleif-olwebsite",
+                "vapor",
+                "cloud"
               ],
-              "port": "8080",
+              "port": null,
               "path": [
                 "api",
                 "post",
@@ -425,13 +445,15 @@
           "request": {
             "method": "POST",
             "url": {
-              "raw": "http://localhost:8080/api/image",
+              "raw": "https://oneleif-olwebsite.vapor.cloud/api/image",
               "query": null,
-              "protocol": "http",
+              "protocol": "https",
               "host": [
-                "localhost"
+                "oneleif-olwebsite",
+                "vapor",
+                "cloud"
               ],
-              "port": "8080",
+              "port": null,
               "path": [
                 "api",
                 "image"
@@ -465,13 +487,15 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "http://localhost:8080/api/image/oneleif_logo.png",
+              "raw": "https://oneleif-olwebsite.vapor.cloud/api/image/oneleif_logo.png",
               "query": null,
-              "protocol": "http",
+              "protocol": "https",
               "host": [
-                "localhost"
+                "oneleif-olwebsite",
+                "vapor",
+                "cloud"
               ],
-              "port": "8080",
+              "port": null,
               "path": [
                 "api",
                 "image",

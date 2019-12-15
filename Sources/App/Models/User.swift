@@ -10,7 +10,7 @@ import Vapor
 import Authentication
 
 struct SocialInformation: Content {
-    var id: Int
+    var id: Int?
     var username: String = ""
     var firstName: String = ""
     var lastName: String = ""

@@ -19,6 +19,15 @@
             <div class="collapse navbar-collapse"
                 id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
+                    <li class="nav-item #if(title == "Register"){active}">
+                        <a href="/register" class="nav-link">Register</a>
+                    </li>
+                    <li class="nav-item #if(title == "Login"){active}">
+                        <a href="/login" class="nav-link">Login</a>
+                    </li>
+                    <li class="nav-item #if(title == "Posts"){active}">
+                        <a href="/posts" class="nav-link">Posts</a>
+                    </li>
                 </ul>
             </div>
         </nav>

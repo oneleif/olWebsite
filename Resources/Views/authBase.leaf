@@ -5,12 +5,12 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-        <link rel="stylesheet" type="text/css" href="styles.css">
+        <link rel="stylesheet" type="text/css" href="/styles.css">
         <title>#(title)</title>
     </head>
     <body>
         <nav class="navbar navbar-expand-md navbar-dark bg-dark">
-            <a class="navbar-brand" href="/">Visual</a>
+            <a class="navbar-brand" href="/authIndex"><img src="/images/logo.png" width=64 height=64></a>
             <button class="navbar-toggler" type="button"
                 data-toggle="collapse" data-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false"
@@ -21,17 +21,19 @@
                 id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item #if(title == "Home"){active}">
-                        <a href="/" class="nav-link">Home</a>
+                        <a href="/dashboard" class="nav-link">Home</a>
                     </li>
-                    <li class="nav-item #if(title == "Solutions"){active}">
-                        <a href="/solutions" class="nav-link">Solutions</a>
+                    <li class="nav-item #if(title == "Posts"){active}">
+                        <a href="/authPosts" class="nav-link">Posts</a>
                     </li>
-                    <li class="nav-item #if(title == "Add Solution"){active}">
-                        <a href="/newSolution" class="nav-link">Add Solution</a>
+                    <li class="nav-item #if(title == "CreatePost"){active}">
+                        <a href="/createPost" class="nav-link">Create Post</a>
                     </li>
-                    
                 </ul>
                 <ul class="navbar-nav mr-right">
+                    <li class="nav-item #if(title == "Account"){active}">
+                        <a href="/social" class="nav-link">Account</a>
+                    </li>
                     <li class="nav-item #if(title == "Logout"){active}">
                         <a href="/logout" class="nav-link">Logout</a>
                     </li>

@@ -1,0 +1,30 @@
+#set("content") {
+    
+    #set("postCard") {
+        <h1>#(post.title)</h1>
+        <div class="postBackground">
+            <div class="postCard">
+                <div class="postTitle">
+                    <div>
+                        <label for="json">Tags</label>
+                        <p>#(post.tags)</p>
+                    </div>
+
+                    <div>
+                        <p>#(post.content)</p>
+                    </div>
+                </div>
+                <div class="postDetail">
+                    <div>
+                        <label for="level">Author</label>
+                        <p>#(post.author)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    #get(postCard)
+}
+
+#embed("authBase")

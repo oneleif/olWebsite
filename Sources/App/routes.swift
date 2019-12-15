@@ -20,4 +20,7 @@ public func routes(_ router: Router) throws {
 
     let baseController = BaseRouteController()
     try router.register(collection: baseController)
+
+    let authController = AuthRouteController()
+    try router.register(collection: authController)
 }

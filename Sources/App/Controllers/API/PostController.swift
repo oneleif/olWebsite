@@ -38,7 +38,6 @@ class PostController: RouteCollection {
                         if let _ = result {
                             return req.future(error: BadPost())
                         }
-                        
                         return post.save(on: req)
                 }
         }
@@ -53,7 +52,7 @@ class PostController: RouteCollection {
     
     func postHandler(_ req: Request) throws -> Future<PostItem> {
         _ = try req.requireAuthenticated(User.self)
-        let postId = Int(try req.parameters.next(PostItem.self))
+        let postId = Int(try req.parameters.next(Int.self))
         
         return PostItem.query(on: req)
             .filter(\PostItem.id == postId)
@@ -70,7 +69,7 @@ class PostController: RouteCollection {
     
     func updatePost(_ req: Request) throws -> Future<(PostItem)> {
         let user = try req.requireAuthenticated(User.self)
-        let postId = Int(try req.parameters.next(PostItem.self))
+        let postId = Int(try req.parameters.next(Int.self))
         
         return try req.content.decode(PostItem.self)
             .flatMap { updatedPostItem in
@@ -94,7 +93,7 @@ class PostController: RouteCollection {
     
     func deletePostHandler(_ req: Request) throws -> Future<HTTPStatus> {
         _ = try req.requireAuthenticated(User.self)
-        let postId = Int(try req.parameters.next(PostItem.self))
+        let postId = Int(try req.parameters.next(Int.self))
         
         return PostItem.query(on: req)
             .filter(\PostItem.id == postId)
