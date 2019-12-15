@@ -57,3 +57,6 @@ final class PostItem: SQLiteModel {
 
 extension PostItem: Content {}
 extension PostItem: Migration {}
+extension PostItem: Parameter {
+    
+}

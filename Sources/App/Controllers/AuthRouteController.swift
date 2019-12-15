@@ -11,7 +11,7 @@ class AuthRouteController: RouteCollection {
         protectedRouter.get("authPosts", use: listPostsHandler)
         protectedRouter.get("authIndex", use: authIndexHandler)
         protectedRouter.get("createPost", use: createPostHandler)
-        protectedRouter.get("post", Int.parameter, use: viewPostHandler)
+        protectedRouter.get("post", PostItem.parameter, use: viewPostHandler)
         protectedRouter.get("social", use: socialHandler)
 
         protectedRouter.post("createPostAPI", use: createPostAPIHandler)
@@ -100,18 +100,10 @@ class AuthRouteController: RouteCollection {
     func viewPostHandler(_ req: Request) throws -> Future<View> {
         print(#function)
         let user = try req.requireAuthenticated(User.self)
-        guard let postId = try? req.parameters.next(Int.self) else {
-            print("viewPost Abort")
-            throw Abort.redirect(to: "authIndex")
-        }
-
-        return PostItem.query(on: req)
-            .filter(\PostItem.id == postId)
-            .first()
-            .flatMap { result in
+        return try req.parameters.next(PostItem.self)
+            .flatMap { post in
             print("2")
-            if let social = user.social,
-                let post = result {
+            if let social = user.social {
                 print("3")
                 let context = AuthPostContext(title: "Post", user: social, post: post)
                 return try req.view().render("Children/authPost", context) 
