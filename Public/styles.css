@@ -38,3 +38,15 @@
     height: auto;
 }
 
+.flex-container {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+	margin: 30px;
+	padding: 30px;
+}
+
+.member-card{
+	padding: 40px;
+}

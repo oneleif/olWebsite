@@ -35,14 +35,14 @@ class UserController: RouteCollection {
                 return user.save(on: req).flatMap { user in
                     user.social = SocialInformation(id: user.id,
                                                 username: user.username,
-                                                firstName: "",
-                                                lastName: "",
+                                                firstName: "one",
+                                                lastName: "leif",
                                                 email: "",
                                                 discordUsername: "",
                                                 githubUsername: "",
                                                 tags: [],
-                                                profileImage: "",
-                                                biography: "",
+                                                profileImage: "oneleif_logo.png",
+                                                biography: "hi im oneleif",
                                                 links: [],
                                                 location: "")
                     return user.save(on: req).map { _ in

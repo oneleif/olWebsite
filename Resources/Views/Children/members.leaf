@@ -1,0 +1,24 @@
+#set("content") {
+    <h1>#(title)</h1>
+
+<div class="flex-container">
+    #for(member in members) {
+        #set("memberCard") {
+            <div class="member-card">
+                <div>
+                    <label>#(member.firstName) #(member.lastName)</label>
+                </div>
+                <div>
+                    <img width="100" height="100" src="/api/image/#(member.profileImage)">
+                </div>
+                <div>
+                    <label>#(member.biography)</label>
+                </div>
+            </div>
+        }
+        #get(memberCard)
+    }
+</div>
+}
+
+#embed("base")

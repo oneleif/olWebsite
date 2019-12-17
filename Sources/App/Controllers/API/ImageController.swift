@@ -35,7 +35,7 @@ struct ImageController: RouteCollection {
         }
     }
     
-    func getImageHandler(_ req: Request) throws -> Future<ImageUpload> {
+    func getImageHandler(_ req: Request) throws -> Future<Response> {
         let imageName = try req.parameters.next(ImageUpload.self)
         
         let path = try self.path(req, forImageNamed: imageName)
@@ -43,9 +43,8 @@ struct ImageController: RouteCollection {
         guard let data = FileManager().contents(atPath: path) else {
             throw Abort(.notFound)
         }
-        return Future.map(on: req) {
-            ImageUpload(picture: data)
-        }
+        
+         return try req.streamFile(at: path)
     }
     
     private func path(_ req: Request, forImageNamed name: String) throws -> String {

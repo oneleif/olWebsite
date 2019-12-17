@@ -13,6 +13,7 @@ class AuthRouteController: RouteCollection {
         protectedRouter.get("createPost", use: createPostHandler)
         protectedRouter.get("viewPost", PostItem.parameter, use: viewPostHandler)
         protectedRouter.get("social", use: socialHandler)
+        protectedRouter.get("authMembers", use: authMembersHandler)
 
         protectedRouter.post("createPostAPI", use: createPostAPIHandler)
     }
@@ -21,6 +22,16 @@ class AuthRouteController: RouteCollection {
         print(#function)
         let user = try req.requireAuthenticated(User.self)
         return try req.view().render("Children/authIndex", IndexContext(title: "oneleif"))
+    }
+
+    func authMembersHandler(_ req: Request) throws -> Future<View> {
+        print(#function)
+         return User.query(on: req).all().flatMap { (users) -> Future<View> in
+                let members = users.compactMap { $0.social }
+
+                return try req.view().render("Children/authMembers", MembersContext(title: "Meet The Team", members: members))
+
+         }
     }
 
     func socialHandler(_ req: Request) throws -> Future<View> {
@@ -109,4 +120,3 @@ class AuthRouteController: RouteCollection {
     }
 
 }
-

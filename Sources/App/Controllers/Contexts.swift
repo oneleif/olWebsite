@@ -44,3 +44,8 @@ struct SocialContext: Encodable {
     let title: String
     let user: SocialInformation
 }
+
+struct MembersContext: Encodable {
+    let title: String
+    let members: [SocialInformation]
+}

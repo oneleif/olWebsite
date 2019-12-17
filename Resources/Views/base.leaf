@@ -28,6 +28,9 @@
                     <li class="nav-item #if(title == "Posts"){active}">
                         <a href="/posts" class="nav-link">Posts</a>
                     </li>
+                    <li class="nav-item #if(title == "Members"){active}">
+                        <a href="/members" class="nav-link">Meet The Team</a>
+                    </li>
                 </ul>
             </div>
         </nav>

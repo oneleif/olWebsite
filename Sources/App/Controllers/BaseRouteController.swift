@@ -9,6 +9,7 @@ class BaseRouteController: RouteCollection {
         router.get("register", use: registerHandler)
         router.get("login", use: loginHandler)
         router.get("posts", use: postsHandler)
+        router.get("members", use: membersHandler)
 
         router.post("register", use: register)
         
@@ -25,7 +26,13 @@ class BaseRouteController: RouteCollection {
          }
     }
 
-  
+    func membersHandler(_ req: Request) throws -> Future<View> {
+        print(#function)
+         return User.query(on: req).all().flatMap { (users) -> Future<View> in
+            let members = users.compactMap { $0.social }
+            return try req.view().render("Children/members", MembersContext(title: "Meet The Team", members: members))
+         }
+    }
 
     func loginHandler(_ req: Request) throws -> Future<View> {
         print(#function)
