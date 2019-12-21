@@ -1,5 +1,5 @@
-.eventCard {
-	flex-flow: column wrap;
+.postCard {
+	flex-flow: row wrap;
 	justify-content: space-around;
 	display: flex;
 	margin: 30px;
@@ -8,15 +8,33 @@
 	border-style: solid;
 }
 
+.postTitle {
+	order: 0;
+}
 
-.eventDetail {
+.postDetail {
+	order: 1;
 }
 
 .updateButtons {
-	flex-flow: row;
-	justify-content: space-around;
-	display: flex;
 	margin-left: 30px;
 	margin-right: 30px;
+}
+
+.index-join-div {
+    border-style: solid;
+    border-radius: 12px;
+}
+
+.index-join-div-inner {
+    margin-left: 12px;
+    margin-right: 12px;
+    margin-top: 12px;
+    margin-bottom: 12px;
+}
+
+.image-badge {
+    width: 30%;
+    height: auto;
 }
 
