@@ -1,7 +1,7 @@
 # oneleif Website and API
 ## olGO
 
-![](Public/images/homeLogo.png)
+![](Public/images/oneleif.png)
 
 ### Project Info
 
