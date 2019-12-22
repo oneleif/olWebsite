@@ -40,6 +40,12 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
     databases.add(database: sqlite, as: .sqlite)
     services.register(databases)
     
+    if env == .testing {
+        var commandConfig = CommandConfig()
+        commandConfig.useFluentCommands()
+        services.register(commandConfig)
+    }
+    
     // Configure migrations
     var migrations = MigrationConfig()
     migrations.add(model: User.self, database: .sqlite)
