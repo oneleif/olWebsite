@@ -57,8 +57,9 @@ class UserController: RouteCollection {
             return user.save(on: req)
         }.map(to: PublicUserResponse.self) { user in
             PublicUserResponse(id: user.id, username: user.username, social: user.social)
-        }.map(to: HTTPResponse.self) { publicUser in
-            var response = HTTPResponse(status: .ok)
+        }
+        .map(to: HTTPResponse.self) { publicUser in
+            var response = HTTPResponse(status: .created)
             try JSONEncoder().encode(publicUser, to: &response, on: req)
             return response
         }
