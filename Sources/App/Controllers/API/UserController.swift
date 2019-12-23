@@ -10,10 +10,6 @@ import FluentSQL
 import Crypto
 import Authentication
 
-enum UserValidationError: Error {
-    case usernameAlreadyTaken
-}
-
 class UserController: RouteCollection {
     func boot(router: Router) throws {
         
@@ -35,7 +31,7 @@ class UserController: RouteCollection {
             .first()
             .flatMap { existingUser -> Future<User> in
                 guard existingUser == nil else {
-                    throw UserValidationError.usernameAlreadyTaken
+                    throw BasicValidationError("username already taken")
                 }
                 
             let hashedPassword = try BCryptDigest().hash(registerBody.password)
@@ -65,20 +61,6 @@ class UserController: RouteCollection {
             var response = HTTPResponse(status: .ok)
             try JSONEncoder().encode(publicUser, to: &response, on: req)
             return response
-        }.mapIfError { error -> HTTPResponse in
-            guard let error = error as? UserValidationError else {
-                return HTTPResponse(status: .internalServerError)
-            }
-            
-            switch error {
-            case .usernameAlreadyTaken:
-                let errorBody = [
-                    "message": "Username already taken"
-                ]
-                var response = HTTPResponse(status: .badRequest)
-                try? JSONEncoder().encode(errorBody, to: &response, on: req)
-                return response
-            }
         }
     }
     
