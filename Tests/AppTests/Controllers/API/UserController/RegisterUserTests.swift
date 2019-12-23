@@ -22,7 +22,7 @@ class UserControllerTests: XCTestCase {
     
     func testUserCanRegister() throws {
         let username = "testUsername"
-        let password = "testPassword"
+        let password = "testPassword1!"
         
         let user = RegisterUserRequest(username: username, password: password)
         let registeredUser = try self.app.getResponse(
