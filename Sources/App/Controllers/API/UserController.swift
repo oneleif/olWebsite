@@ -28,6 +28,8 @@ class UserController: RouteCollection {
     // MARK: Request Handlers
     
     func register(_ req: Request, _ registerBody: RegisterUserRequest) throws -> Future<HTTPResponse> {
+        try registerBody.validate()
+        
         return User.query(on: req)
             .filter(\User.username == registerBody.username)
             .first()
