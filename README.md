@@ -18,7 +18,7 @@ To see the oneleif Android app please see the following repository: https://gith
 
 
 
-This project is a oneleif active project.
+This project is a oneleif active project, meaning it is open sourced and ran by members of oneleif, with support of other oneleif members.
 
 [![](https://img.shields.io/badge/oneleif-Twitter-blue.svg)](https://twitter.com/oneleifdev)
 
