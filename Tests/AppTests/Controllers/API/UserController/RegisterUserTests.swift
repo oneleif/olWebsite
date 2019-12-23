@@ -3,7 +3,7 @@ import Vapor
 import XCTest
 import FluentSQLite
 
-class UserControllerTests: XCTestCase {
+class RegisterUserTests: XCTestCase {
     let registerUri = "/api/register"
     
     var app: Application!
@@ -24,14 +24,8 @@ class UserControllerTests: XCTestCase {
         let username = "testUsername"
         let password = "testPassword1!"
         
-        let user = RegisterUserRequest(username: username, password: password)
-        let registeredUser = try self.app.getResponse(
-            to: self.registerUri,
-            method: .POST,
-            headers: ["Content-Type": "application/json"],
-            data: user,
-            decodeTo: PublicUserResponse.self
-        )
+        let request = RegisterUserRequest(username: username, password: password)
+        let registeredUser = try self.tryRegisterUser(request: request, decodeTo: PublicUserResponse.self)
         
         XCTAssertEqual(registeredUser.username, username)
         XCTAssertNotNil(registeredUser.id)
@@ -39,5 +33,101 @@ class UserControllerTests: XCTestCase {
         
         let dbUser = try User.find(registeredUser.id!, on: self.connection).wait()
         XCTAssertNotNil(dbUser)
+    }
+    
+    func testUsernameTooShortValidation() throws {
+        let username = "u"
+        let password = "testPassword1!"
+        
+        let request = RegisterUserRequest(username: username, password: password)
+        
+        let errorResponse = try self.tryRegisterUser(request: request, decodeTo: ErrorResponse.self)
+        
+        XCTAssertNotNil(errorResponse)
+        XCTAssertTrue(errorResponse.reason.contains("'username' is less than required minimum of 3 characters"))
+    }
+    
+    func testPasswordTooShortValidation() throws {
+        let username = "testUser"
+        let password = "pwd1$"
+        
+        let request = RegisterUserRequest(username: username, password: password)
+        
+        let errorResponse = try self.tryRegisterUser(request: request, decodeTo: ErrorResponse.self)
+        
+        XCTAssertNotNil(errorResponse)
+        XCTAssertTrue(errorResponse.reason.contains("'password' is less than required minimum of 6 characters"))
+    }
+    
+    func testPasswordMissingLowercaseLetterValidation() throws {
+        let username = "testUser"
+        let password = "TEST_PWD"
+        
+        let request = RegisterUserRequest(username: username, password: password)
+        
+        let errorResponse = try self.tryRegisterUser(request: request, decodeTo: ErrorResponse.self)
+        
+        XCTAssertNotNil(errorResponse)
+        XCTAssertTrue(errorResponse.reason.contains("'password' must contain lowercase letter"))
+    }
+    
+    func testPasswordMissingUppercaseLetterValidation() throws {
+        let username = "testUser"
+        let password = "test_pwd"
+        
+        let request = RegisterUserRequest(username: username, password: password)
+        
+        let errorResponse = try self.tryRegisterUser(request: request, decodeTo: ErrorResponse.self)
+        
+        XCTAssertNotNil(errorResponse)
+        XCTAssertTrue(errorResponse.reason.contains("'password' must contain uppercase letter"))
+    }
+    
+    func testPasswordMissingDigitValidation() throws {
+        let username = "testUser"
+        let password = "test_pwd"
+        
+        let request = RegisterUserRequest(username: username, password: password)
+        
+        let errorResponse = try self.tryRegisterUser(request: request, decodeTo: ErrorResponse.self)
+        
+        XCTAssertNotNil(errorResponse)
+        XCTAssertTrue(errorResponse.reason.contains("'password' must contain digit"))
+    }
+    
+    func testPasswordMissingSpecialCharacterValidation() throws {
+        let username = "testUser"
+        let password = "testpwd"
+        
+        let request = RegisterUserRequest(username: username, password: password)
+        
+        let errorResponse = try self.tryRegisterUser(request: request, decodeTo: ErrorResponse.self)
+        
+        XCTAssertNotNil(errorResponse)
+        XCTAssertTrue(errorResponse.reason.contains("'password' must contain special character"))
+    }
+    
+    func testUsernameTakenValidation() throws {
+        let username = "testUser"
+        let password = "testPwd1#"
+        
+        let request = RegisterUserRequest(username: username, password: password)
+        
+        let _ = try self.tryRegisterUser(request: request, decodeTo: PublicUserResponse.self)
+        
+        let errorResponse = try self.tryRegisterUser(request: request, decodeTo: ErrorResponse.self)
+        
+        XCTAssertNotNil(errorResponse)
+        XCTAssertTrue(errorResponse.reason.contains("username already taken"))
+    }
+    
+    private func tryRegisterUser<T: Content>(request: RegisterUserRequest, decodeTo decodeType: T.Type) throws -> T {
+        return try self.app.getResponse(
+            to: self.registerUri,
+            method: .POST,
+            headers: ["Content-Type": "application/json"],
+            data: request,
+            decodeTo: decodeType
+        )
     }
 }
