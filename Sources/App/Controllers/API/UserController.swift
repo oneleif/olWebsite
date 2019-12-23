@@ -34,10 +34,10 @@ class UserController: RouteCollection {
                     throw BasicValidationError("username already taken")
                 }
                 
-            let hashedPassword = try BCryptDigest().hash(registerRequest.password)
-            let user = User(username: registerRequest.username, password: hashedPassword)
+                let hashedPassword = try BCryptDigest().hash(registerRequest.password)
+                let user = User(username: registerRequest.username, password: hashedPassword)
                 
-                return Future.map(on: req) { user }
+                return req.future(user)
         }.flatMap { user in
             return user.save(on: req)
         }.flatMap { (user: User) -> EventLoopFuture<User> in
