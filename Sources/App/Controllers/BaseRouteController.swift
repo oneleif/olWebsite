@@ -51,8 +51,8 @@ class BaseRouteController: RouteCollection {
     
     func login(_ req: Request) throws -> Future<Response> {
         print(#function)
-        return try req.content.decode(User.self).flatMap { user in
-            return try UserController().login(req).map { _ in
+        return try req.content.decode(LoginRequest.self).flatMap { loginRequest in
+            return try UserController().login(req, loginRequest).map { _ in
                 //redirect to dashboard
                 return req.redirect(to: "/dashboard")
             }
