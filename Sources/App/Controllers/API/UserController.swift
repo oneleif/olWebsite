@@ -16,7 +16,7 @@ class UserController: RouteCollection {
         router.post(RegisterUserRequest.self, at: "api", "register", use: self.register)
         
         let authSessionRouter = router.grouped(User.authSessionsMiddleware())
-        authSessionRouter.post("api", "login", use: login)
+        authSessionRouter.post(LoginRequest.self, at: "api", "login", use: self.login)
         
         router.get("api", "logout", use: logout)
     }
@@ -65,25 +65,23 @@ class UserController: RouteCollection {
         }
     }
     
-    func login(_ req: Request) throws -> Future<HTTPStatus> {
-        return try req.content.decode(User.self).flatMap { user in
-            return User.authenticate(
-                username: user.username,
-                password: user.password,
-                using: BCryptDigest(),
-                on: req
-            ).map { user in
-                guard let user = user else {
-                    return .badRequest
-                }
-                try req.authenticateSession(user)
-                return .accepted
+    func login(_ req: Request, _ loginRequest: LoginRequest) throws -> Future<HTTPStatus> {
+        return User.authenticate(
+            username: loginRequest.username,
+            password: loginRequest.password,
+            using: BCryptDigest(),
+            on: req
+        ).map { user in
+            guard let user = user else {
+                return .unauthorized
             }
+            try req.authenticateSession(user)
+            return .ok
         }
     }
     
     func logout(_ req: Request) throws -> Future<HTTPStatus> {
         try req.unauthenticateSession(User.self)
-        return Future.map(on: req) { return .accepted }
+        return req.future(.noContent)
     }
 }
