@@ -1,11 +1,22 @@
 # oneleif Website and API
-## olGO
 
 ![](Public/images/oneleif.png)
 
 ### Project Info
 
-// TODO
+This project is the central repository for the oneleif website. The website will feature posts, social information, and serve as a central place to share information and be recruited.
+
+This repository specifically holds the backend for serving up API requests and pre-rendered HTML views.
+
+To get started working on this project, please see our wiki: https://github.com/oneleif/olWebsite/wiki
+
+
+To see the React front end for the oneleif website, please see the following repository: https://github.com/oneleif/olWebsite-React
+
+To see the oneleif iOS app please see the following repository: https://github.com/oneleif/olGO
+To see the oneleif Android app please see the following repository: https://github.com/oneleif/olgo-android
+
+
 
 This project is a oneleif active project.
 
