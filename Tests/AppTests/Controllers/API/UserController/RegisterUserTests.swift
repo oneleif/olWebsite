@@ -25,7 +25,12 @@ class RegisterUserTests: XCTestCase {
         let password = "testPassword1!"
         
         let request = RegisterUserRequest(username: username, password: password)
-        let registeredUser = try self.tryRegisterUser(request: request, decodeTo: PublicUserResponse.self)
+        let (registeredUser, status) = try self.tryRegisterUser(request: request, decodeTo: PublicUserResponse.self)
+        
+        XCTAssertNotNil(registeredUser)
+        XCTAssertNotNil(status)
+        
+        XCTAssertEqual(status, .created)
         
         XCTAssertEqual(registeredUser.username, username)
         XCTAssertNotNil(registeredUser.id)
@@ -41,9 +46,11 @@ class RegisterUserTests: XCTestCase {
         
         let request = RegisterUserRequest(username: username, password: password)
         
-        let errorResponse = try self.tryRegisterUser(request: request, decodeTo: ErrorResponse.self)
+        let (errorResponse, status) = try self.tryRegisterUser(request: request, decodeTo: ErrorResponse.self)
         
         XCTAssertNotNil(errorResponse)
+        XCTAssertNotNil(status)
+        XCTAssertEqual(status, .badRequest)
         XCTAssertTrue(errorResponse.reason.contains("'username' is less than required minimum of 3 characters"))
     }
     
@@ -53,9 +60,11 @@ class RegisterUserTests: XCTestCase {
         
         let request = RegisterUserRequest(username: username, password: password)
         
-        let errorResponse = try self.tryRegisterUser(request: request, decodeTo: ErrorResponse.self)
+        let (errorResponse, status) = try self.tryRegisterUser(request: request, decodeTo: ErrorResponse.self)
         
         XCTAssertNotNil(errorResponse)
+        XCTAssertNotNil(status)
+        XCTAssertEqual(status, .badRequest)
         XCTAssertTrue(errorResponse.reason.contains("'password' is less than required minimum of 6 characters"))
     }
     
@@ -65,9 +74,11 @@ class RegisterUserTests: XCTestCase {
         
         let request = RegisterUserRequest(username: username, password: password)
         
-        let errorResponse = try self.tryRegisterUser(request: request, decodeTo: ErrorResponse.self)
+        let (errorResponse, status) = try self.tryRegisterUser(request: request, decodeTo: ErrorResponse.self)
         
         XCTAssertNotNil(errorResponse)
+        XCTAssertNotNil(status)
+        XCTAssertEqual(status, .badRequest)
         XCTAssertTrue(errorResponse.reason.contains("'password' must contain lowercase letter"))
     }
     
@@ -77,9 +88,11 @@ class RegisterUserTests: XCTestCase {
         
         let request = RegisterUserRequest(username: username, password: password)
         
-        let errorResponse = try self.tryRegisterUser(request: request, decodeTo: ErrorResponse.self)
+        let (errorResponse, status) = try self.tryRegisterUser(request: request, decodeTo: ErrorResponse.self)
         
         XCTAssertNotNil(errorResponse)
+        XCTAssertNotNil(status)
+        XCTAssertEqual(status, .badRequest)
         XCTAssertTrue(errorResponse.reason.contains("'password' must contain uppercase letter"))
     }
     
@@ -89,9 +102,11 @@ class RegisterUserTests: XCTestCase {
         
         let request = RegisterUserRequest(username: username, password: password)
         
-        let errorResponse = try self.tryRegisterUser(request: request, decodeTo: ErrorResponse.self)
+        let (errorResponse, status) = try self.tryRegisterUser(request: request, decodeTo: ErrorResponse.self)
         
         XCTAssertNotNil(errorResponse)
+        XCTAssertNotNil(status)
+        XCTAssertEqual(status, .badRequest)
         XCTAssertTrue(errorResponse.reason.contains("'password' must contain digit"))
     }
     
@@ -101,9 +116,11 @@ class RegisterUserTests: XCTestCase {
         
         let request = RegisterUserRequest(username: username, password: password)
         
-        let errorResponse = try self.tryRegisterUser(request: request, decodeTo: ErrorResponse.self)
+        let (errorResponse, status) = try self.tryRegisterUser(request: request, decodeTo: ErrorResponse.self)
         
         XCTAssertNotNil(errorResponse)
+        XCTAssertNotNil(status)
+        XCTAssertEqual(status, .badRequest)
         XCTAssertTrue(errorResponse.reason.contains("'password' must contain special character"))
     }
     
@@ -115,19 +132,25 @@ class RegisterUserTests: XCTestCase {
         
         let _ = try self.tryRegisterUser(request: request, decodeTo: PublicUserResponse.self)
         
-        let errorResponse = try self.tryRegisterUser(request: request, decodeTo: ErrorResponse.self)
+        let (errorResponse, status) = try self.tryRegisterUser(request: request, decodeTo: ErrorResponse.self)
         
         XCTAssertNotNil(errorResponse)
+        XCTAssertNotNil(status)
+        XCTAssertEqual(status, .badRequest)
         XCTAssertTrue(errorResponse.reason.contains("username already taken"))
     }
     
-    private func tryRegisterUser<T: Content>(request: RegisterUserRequest, decodeTo decodeType: T.Type) throws -> T {
-        return try self.app.getResponse(
+    private func tryRegisterUser<T: Content>(request: RegisterUserRequest, decodeTo decodeType: T.Type) throws -> (T, HTTPResponseStatus)  {
+        let response = try self.app.sendRequest(
             to: self.registerUri,
             method: .POST,
             headers: ["Content-Type": "application/json"],
-            data: request,
-            decodeTo: decodeType
+            body: request
         )
+        
+        let status = response.http.status
+        let decoded: T = try response.content.decode(decodeType).wait()
+        
+        return (decoded, status)
     }
 }
