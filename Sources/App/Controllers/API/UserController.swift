@@ -23,19 +23,19 @@ class UserController: RouteCollection {
     
     // MARK: Request Handlers
     
-    func register(_ req: Request, _ registerBody: RegisterUserRequest) throws -> Future<HTTPResponse> {
-        try registerBody.validate()
+    func register(_ req: Request, _ registerRequest: RegisterUserRequest) throws -> Future<HTTPResponse> {
+        try registerRequest.validate()
         
         return User.query(on: req)
-            .filter(\User.username == registerBody.username)
+            .filter(\User.username == registerRequest.username)
             .first()
             .flatMap { existingUser -> Future<User> in
                 guard existingUser == nil else {
                     throw BasicValidationError("username already taken")
                 }
                 
-            let hashedPassword = try BCryptDigest().hash(registerBody.password)
-            let user = User(username: registerBody.username, password: hashedPassword)
+            let hashedPassword = try BCryptDigest().hash(registerRequest.password)
+            let user = User(username: registerRequest.username, password: hashedPassword)
                 
                 return Future.map(on: req) { user }
         }.flatMap { user in
