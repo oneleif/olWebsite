@@ -1,0 +1,75 @@
+#set("content") {
+
+    <h1>#(title)</h1>
+
+    <div class="eventBackground">
+        <form method="post" action="/editSocialAPI">
+            <div class="eventCard">
+                <div class="eventTitle">
+                    <div class="form-group">
+                        <input type="file" name="profileImage" accept="image/png,image/jpg">
+                    </div>
+
+                    <div class="form-group">
+                        <label>First Name</label>
+                        <input type="text" name="firstName" class="form-control" value="#(user.firstName)">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Last Name</label>
+                        <input type="text" name="lastName" class="form-control" value="#(user.lastName)">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="text" name="email" class="form-control" value="#(user.email)">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Discord Username (i.e. ambid17#8975)</label>
+                        <input type="text" name="discordUsername" class="form-control" value="#(user.discordUsername)">
+                    </div>
+
+                    <div class="form-group">
+                        <label>GitHub Username</label>
+                        <input type="text" name="githubUsername" class="form-control" value="#(user.githubUsername)">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Tags (comma separated, i.e. "iOS, mobile, web")</label>
+                        <textarea name="tags" class="form-control">#(user.tags)</textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Biography</label>
+                        <textarea name="biography" class="form-control">#(user.biography)</textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Links (comma separated)</label>
+                        <textarea name="links" class="form-control">#(user.links)</textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Location (address will not be public)</label>
+                        <textarea name="location" class="form-control">#(user.location)</textarea>
+                    </div>
+                </div>
+
+                <!-- hidden form content -->
+                <div class="form-group" hidden>
+                    <input type="number" name="id" class="form-control" value="#(user.id)">
+                    <input type="text" name="username" class="form-control" value="#(user.username)">
+                </div>
+            </div>
+
+            <div class="updateButtons">
+                <button type="submit" class="btn btn-primary">
+                    Update Profile
+                </button>
+            </div>
+        </form>
+    </div>
+}
+
+#embed("authBase")

@@ -26,16 +26,13 @@
                     <li class="nav-item #if(title == "Posts"){active}">
                         <a href="/authPosts" class="nav-link">Posts</a>
                     </li>
-                    <li class="nav-item #if(title == "CreatePost"){active}">
-                        <a href="/createPost" class="nav-link">Create Post</a>
-                    </li>
                     <li class="nav-item #if(title == "Members"){active}">
                         <a href="/authMembers" class="nav-link">Meet The Team</a>
                     </li>
                 </ul>
                 <ul class="navbar-nav mr-right">
                     <li class="nav-item #if(title == "Account"){active}">
-                        <a href="/social" class="nav-link">Account</a>
+                        <a href="/authSocial" class="nav-link">Account</a>
                     </li>
                     <li class="nav-item #if(title == "Logout"){active}">
                         <a href="/logout" class="nav-link">Logout</a>

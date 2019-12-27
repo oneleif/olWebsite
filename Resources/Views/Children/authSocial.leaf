@@ -1,6 +1,19 @@
 #set("content") {
     <h1>#(title)</h1>
 
+    <form method="get" action="/editSocial">
+        <div>
+            <button type="submit" class="btn btn-primary">
+                Edit Profile
+            </button>
+        </div>
+    </form>
+
+    <div>
+        <label>Profile Picture</label>
+        <img width="100" height="100" src="/api/image/#(user.profileImage)">
+    </div>
+
     <div>
         <label>Username</label>
         <label>#(user.username)</label>
@@ -47,4 +60,4 @@
     </div>
 }
 
-#embed("base")
+#embed("authBase")

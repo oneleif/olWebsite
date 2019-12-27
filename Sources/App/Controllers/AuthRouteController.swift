@@ -12,10 +12,12 @@ class AuthRouteController: RouteCollection {
         protectedRouter.get("authIndex", use: authIndexHandler)
         protectedRouter.get("createPost", use: createPostHandler)
         protectedRouter.get("viewPost", PostItem.parameter, use: viewPostHandler)
-        protectedRouter.get("social", use: socialHandler)
+        protectedRouter.get("authSocial", use: socialHandler)
+        protectedRouter.get("editSocial", use: editSocialHandler)
         protectedRouter.get("authMembers", use: authMembersHandler)
 
         protectedRouter.post("createPostAPI", use: createPostAPIHandler)
+        protectedRouter.post("editSocialAPI", use: editSocialAPIHandler)
     }
 
     func authIndexHandler(_ req: Request) throws -> Future<View> {
@@ -38,11 +40,20 @@ class AuthRouteController: RouteCollection {
         print(#function)
         let user = try req.requireAuthenticated(User.self)
         if let social = user.social {
-            return try req.view().render("Children/social", SocialContext(title: "Your account", user: social))
+            return try req.view().render("Children/authSocial", SocialContext(title: "Your account", user: social))
         } else {
             return try req.view().render("Children/index", IndexContext(title: "oneleif"))
         }
-        
+    }
+
+    func editSocialHandler(_ req: Request) throws -> Future<View> {
+        print(#function)
+        let user = try req.requireAuthenticated(User.self)
+        if let social = user.social {
+            return try req.view().render("Children/editSocial", SocialContext(title: "Edit Your account", user: social))
+        } else {
+            return try req.view().render("Children/index", IndexContext(title: "oneleif"))
+        }
     }
 
     func dashboardHandler(_ req: Request) throws -> Future<View> {
@@ -96,6 +107,22 @@ class AuthRouteController: RouteCollection {
                     return req.redirect(to: "authPosts")
                 }
                 return req.redirect(to: "viewPost/\(id)")
+            }
+        } else {
+            return Future.map(on: req) { 
+                return req.redirect(to:"Children/index")
+            }
+        }
+    }
+
+    func editSocialAPIHandler(_ req: Request) throws -> Future<Response> {
+        print(#function)
+        let user = try req.requireAuthenticated(User.self)
+
+        if let social = user.social {
+            //Update social
+            return try SocialController().updateSocialHandler(req).map { social in
+                return req.redirect(to: "authSocial")
             }
         } else {
             return Future.map(on: req) { 

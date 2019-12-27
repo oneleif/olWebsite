@@ -35,8 +35,9 @@ class SocialController: RouteCollection {
     }
     
     func updateSocialHandler(_ req: Request) throws -> Future<SocialInformation> {
+        print(#function)
+
         _ = try req.requireAuthenticated(User.self)
-        
         return try req.content.decode(SocialInformation.self)
             .flatMap { social in
                 return User.query(on: req)

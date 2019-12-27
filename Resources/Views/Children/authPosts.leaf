@@ -1,6 +1,18 @@
 #set("content") {
+    <div>
     <h1>#(title)</h1>
 
+    <form method="get" action="/createPost">
+        <div>
+            <button type="submit" class="btn btn-primary">
+                Create Post
+            </button>
+        </div>
+    </form>
+
+    </div>
+
+    <div>
     #for(post in posts) {
         #set("postCard") {
             <div class="postBackground">
@@ -32,6 +44,7 @@
 
         #get(postCard)
     }
+    </div>
 }
 
 #embed("authBase")

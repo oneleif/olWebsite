@@ -8,29 +8,29 @@
                 <div class="eventTitle">
                     <div class="form-group">
                         <label>Post Title</label>
-                        <input type="text" name="title" class="form-control" id="title">
+                        <input type="text" name="title" class="form-control"">
                     </div>
                     <div class="form-group">
                         <label>Description</label>
-                        <textarea name="description" class="form-control" id="description"></textarea>
+                        <textarea name="description" class="form-control"></textarea>
                     </div>
                     <div class="form-group">
                         <label>Content (in Markdown)</label>
-                        <textarea name="content" class="form-control" id="content"></textarea>
+                        <textarea name="content" class="form-control"></textarea>
                     </div>
                     <div class="form-group">
                         <label>Tags</label>
-                        <textarea name="tags" class="form-control" id="tags"></textarea>
+                        <textarea name="tags" class="form-control"></textarea>
                     </div>
                     <div class="form-group">
                         <label>Resource URL</label>
-                        <textarea name="url" class="form-control" id="url"></textarea>
+                        <textarea name="url" class="form-control"></textarea>
                     </div>
                 </div>
 
                 <!-- hidden form content -->
                 <div class="form-group" hidden>
-                    <input type="number" name="author" class="form-control" id="user" value="#(user.id)">
+                    <input type="number" name="author" class="form-control" value="#(user.id)">
                 </div>
             </div>
 

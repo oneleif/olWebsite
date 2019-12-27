@@ -27,4 +27,4 @@
     }
 }
 
-#embed("base")
+#embed("authBase")
