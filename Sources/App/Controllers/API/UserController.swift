@@ -25,38 +25,17 @@ class UserController: RouteCollection {
     
     func register(_ req: Request, _ registerRequest: RegisterUserRequest) throws -> Future<HTTPResponse> {
         try req.validate(registerRequest)
+        let userService = try req.make(UserService.self)
         
-        return User.query(on: req)
-            .filter(\User.username == registerRequest.username)
-            .first()
-            .flatMap { existingUser -> Future<User> in
-                guard existingUser == nil else {
-                    throw BasicValidationError("username already taken")
+        return userService.isEmailTaken(req: req, email: registerRequest.email)
+            .flatMap { isTaken -> EventLoopFuture<User> in
+                guard !isTaken else {
+                    throw BasicValidationError("email already taken")
                 }
                 
-                let hashedPassword = try BCryptDigest().hash(registerRequest.password)
-                let user = User(username: registerRequest.username, password: hashedPassword)
-                
-                return req.future(user)
-        }.flatMap { user in
-            return user.save(on: req)
-        }.flatMap { (user: User) -> EventLoopFuture<User> in
-            user.social = SocialInformation(id: user.id,
-                                            username: user.username,
-                                            firstName: "",
-                                            lastName: "",
-                                            email: "",
-                                            discordUsername: "",
-                                            githubUsername: "",
-                                            tags: [],
-                                            profileImage: "",
-                                            biography: "",
-                                            links: [],
-                                            location: "")
-            
-            return user.save(on: req)
+                return try userService.createUser(request: req, registerRequest: registerRequest)
         }.map(to: PublicUserResponse.self) { user in
-            PublicUserResponse(id: user.id, username: user.username, social: user.social)
+            PublicUserResponse(id: user.id, email: user.email, social: user.social)
         }
         .map(to: HTTPResponse.self) { publicUser in
             var response = HTTPResponse(status: .created)
@@ -66,11 +45,12 @@ class UserController: RouteCollection {
     }
     
     func login(_ req: Request, _ loginRequest: LoginRequest) throws -> Future<HTTPStatus> {
-        return User.authenticate(
-            username: loginRequest.username,
-            password: loginRequest.password,
-            using: BCryptDigest(),
-            on: req
+        let userService = try req.make(UserService.self)
+        
+        return userService.authorize(
+            req: req,
+            email: loginRequest.email,
+            password: loginRequest.password
         ).map { user in
             guard let user = user else {
                 return .unauthorized
