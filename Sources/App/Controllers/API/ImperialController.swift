@@ -18,10 +18,10 @@ struct ImperialController: RouteCollection {
 
   func processGoogleLogin(request: Request, token: String) throws -> Future<ResponseEncodable> {
     return try Google.getUser(on: request).flatMap(to: ResponseEncodable.self) { userInfo in
-      return User.query(on: request).filter(\.username == userInfo.email)
+      return User.query(on: request).filter(\.email == userInfo.email)
                  .first().flatMap(to: ResponseEncodable.self) { foundUser in
         guard let existingUser = foundUser else {
-          let user = User(username: userInfo.email, password: UUID().uuidString)
+          let user = User(email: userInfo.email, password: UUID().uuidString)
           return user.save(on: request).map(to: ResponseEncodable.self) { user in
             try request.authenticateSession(user)
             return request.redirect(to: "/")
@@ -35,10 +35,10 @@ struct ImperialController: RouteCollection {
 
   func processGitHubLogin(request: Request, token: String) throws -> Future<ResponseEncodable> {
     return try GitHub.getUser(on: request).flatMap(to: ResponseEncodable.self) { userInfo in
-      return User.query(on: request).filter(\.username == userInfo.login)
+      return User.query(on: request).filter(\.email == userInfo.login)
                  .first().flatMap(to: ResponseEncodable.self) { foundUser in
         guard let existingUser = foundUser else {
-          let user = User(username: userInfo.login, password: UUID().uuidString)
+          let user = User(email: userInfo.login, password: UUID().uuidString)
           return user.save(on: request).map(to: ResponseEncodable.self) { user in
             try request.authenticateSession(user)
             return request.redirect(to: "/")

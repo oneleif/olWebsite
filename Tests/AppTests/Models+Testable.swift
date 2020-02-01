@@ -2,9 +2,9 @@
 import FluentSQLite
 
 extension User {
-    static func create(username: String = "test", password: String = "testPwd",
+    static func create(email: String = "test@test.com", password: String = "testPwd",
                        on connection: SQLiteConnection) throws -> User {
-        let user = User(username: username, password: password)
+        let user = User(email: email, password: password)
         return try user.save(on: connection).wait()
     }
 }
