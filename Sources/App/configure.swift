@@ -56,4 +56,8 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
     var validatorService = ValidatorService()
     validatorService.skipValidation = env == .development
     services.register(validatorService)
+    
+    // Configure model services
+    let userService = UserService()
+    services.register(userService)
 }
