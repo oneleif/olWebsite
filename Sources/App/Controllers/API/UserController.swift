@@ -27,13 +27,13 @@ class UserController: RouteCollection {
         try req.validate(registerRequest)
         let userService = try req.make(UserService.self)
         
-        return userService.isEmailTaken(req: req, email: registerRequest.email)
+        return userService.isEmailTaken(email: registerRequest.email, on: req)
             .flatMap { isTaken -> EventLoopFuture<User> in
                 guard !isTaken else {
                     throw BasicValidationError("email already taken")
                 }
                 
-                return try userService.createUser(request: req, registerRequest: registerRequest)
+                return try userService.createUser(registerRequest: registerRequest, on: req)
         }.map(to: PublicUserResponse.self) { user in
             PublicUserResponse(id: user.id, email: user.email, social: user.social)
         }
@@ -48,9 +48,9 @@ class UserController: RouteCollection {
         let userService = try req.make(UserService.self)
         
         return userService.authorize(
-            req: req,
             email: loginRequest.email,
-            password: loginRequest.password
+            password: loginRequest.password,
+            on: req
         ).map { user in
             guard let user = user else {
                 return .unauthorized

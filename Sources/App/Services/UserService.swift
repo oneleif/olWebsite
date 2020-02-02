@@ -4,31 +4,31 @@ import Crypto
 import Authentication
 
 class UserService: Service {
-    func createUser(request: Request, registerRequest: RegisterUserRequest) throws -> Future<User> {
+    func createUser(registerRequest: RegisterUserRequest, on connection: DatabaseConnectable) throws -> Future<User> {
         let hashedPassword = try BCryptDigest().hash(registerRequest.password)
         let user = User(email: registerRequest.email, password: hashedPassword)
         
-        return request.transaction(on: .sqlite) { (conn) -> EventLoopFuture<User> in
+        return connection.transaction(on: .sqlite) { (conn) -> EventLoopFuture<User> in
             return user.save(on: conn).flatMap { (user) -> EventLoopFuture<User> in
                 user.social = self.newSocialInformation(for: user)
-                return user.save(on: conn)
+                return user.save(on: connection)
             }
         }
     }
     
-    func isEmailTaken(req: Request, email: String) -> Future<Bool> {
-        return User.query(on: req)
+    func isEmailTaken(email: String, on connection: DatabaseConnectable) -> Future<Bool> {
+        return User.query(on: connection)
             .filter(\User.email == email)
             .first()
             .map { $0 != nil }
     }
     
-    func authorize(req: Request, email: String, password: String) -> Future<User?> {
+    func authorize(email: String, password: String, on connection: DatabaseConnectable) -> Future<User?> {
         return User.authenticate(
             username: email,
             password: password,
             using: BCryptDigest(),
-            on: req
+            on: connection
         )
     }
     
