@@ -1,7 +1,7 @@
 import Vapor
 
 struct RegisterUserRequest: Content {
-    var username: String
+    var email: String
     var password: String
 }
 
@@ -9,7 +9,7 @@ extension RegisterUserRequest: Validatable, Reflectable {
     static func validations() throws -> Validations<RegisterUserRequest> {
         var validations = Validations(RegisterUserRequest.self)
         
-        try validations.add(\.username, .count(3...))
+        try validations.add(\.email, .email)
         try validations.add(\.password, .count(6...))
         
         try validations.add(\.password, "contains lowecase letter") { password in

@@ -1,6 +1,6 @@
 import Vapor
 
 struct LoginRequest: Content {
-    var username: String
+    var email: String
     var password: String
 }

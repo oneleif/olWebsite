@@ -21,10 +21,10 @@ class RegisterUserTests: XCTestCase {
     }
     
     func testUserCanRegister() throws {
-        let username = "testUsername"
+        let email = "test@email.com"
         let password = "testPassword1!"
         
-        let request = RegisterUserRequest(username: username, password: password)
+        let request = RegisterUserRequest(email: email, password: password)
         let (registeredUser, status) = try self.tryRegisterUser(request: request, decodeTo: PublicUserResponse.self)
         
         XCTAssertNotNil(registeredUser)
@@ -32,7 +32,7 @@ class RegisterUserTests: XCTestCase {
         
         XCTAssertEqual(status, .created)
         
-        XCTAssertEqual(registeredUser.username, username)
+        XCTAssertEqual(registeredUser.email, email)
         XCTAssertNotNil(registeredUser.id)
         XCTAssertNotNil(registeredUser.social)
         
@@ -40,25 +40,25 @@ class RegisterUserTests: XCTestCase {
         XCTAssertNotNil(dbUser)
     }
     
-    func testUsernameTooShortValidation() throws {
-        let username = "u"
+    func testInvalidEmailValidation() throws {
+        let email = "u"
         let password = "testPassword1!"
         
-        let request = RegisterUserRequest(username: username, password: password)
+        let request = RegisterUserRequest(email: email, password: password)
         
         let (errorResponse, status) = try self.tryRegisterUser(request: request, decodeTo: ErrorResponse.self)
         
         XCTAssertNotNil(errorResponse)
         XCTAssertNotNil(status)
         XCTAssertEqual(status, .badRequest)
-        XCTAssertTrue(errorResponse.reason.contains("'username' is less than required minimum of 3 characters"))
+        XCTAssertTrue(errorResponse.reason.contains("'email' is not a valid email address"))
     }
     
     func testPasswordTooShortValidation() throws {
-        let username = "testUser"
+        let email = "test@test.com"
         let password = "pwd1$"
         
-        let request = RegisterUserRequest(username: username, password: password)
+        let request = RegisterUserRequest(email: email, password: password)
         
         let (errorResponse, status) = try self.tryRegisterUser(request: request, decodeTo: ErrorResponse.self)
         
@@ -69,10 +69,10 @@ class RegisterUserTests: XCTestCase {
     }
     
     func testPasswordMissingLowercaseLetterValidation() throws {
-        let username = "testUser"
+        let email = "test@test.com"
         let password = "TEST_PWD"
         
-        let request = RegisterUserRequest(username: username, password: password)
+        let request = RegisterUserRequest(email: email, password: password)
         
         let (errorResponse, status) = try self.tryRegisterUser(request: request, decodeTo: ErrorResponse.self)
         
@@ -83,10 +83,10 @@ class RegisterUserTests: XCTestCase {
     }
     
     func testPasswordMissingUppercaseLetterValidation() throws {
-        let username = "testUser"
+        let email = "test@test.com"
         let password = "test_pwd"
         
-        let request = RegisterUserRequest(username: username, password: password)
+        let request = RegisterUserRequest(email: email, password: password)
         
         let (errorResponse, status) = try self.tryRegisterUser(request: request, decodeTo: ErrorResponse.self)
         
@@ -97,10 +97,10 @@ class RegisterUserTests: XCTestCase {
     }
     
     func testPasswordMissingDigitValidation() throws {
-        let username = "testUser"
+        let email = "test@test.com"
         let password = "test_pwd"
         
-        let request = RegisterUserRequest(username: username, password: password)
+        let request = RegisterUserRequest(email: email, password: password)
         
         let (errorResponse, status) = try self.tryRegisterUser(request: request, decodeTo: ErrorResponse.self)
         
@@ -111,10 +111,10 @@ class RegisterUserTests: XCTestCase {
     }
     
     func testPasswordMissingSpecialCharacterValidation() throws {
-        let username = "testUser"
+        let email = "test@test.com"
         let password = "testpwd"
         
-        let request = RegisterUserRequest(username: username, password: password)
+        let request = RegisterUserRequest(email: email, password: password)
         
         let (errorResponse, status) = try self.tryRegisterUser(request: request, decodeTo: ErrorResponse.self)
         
@@ -124,11 +124,11 @@ class RegisterUserTests: XCTestCase {
         XCTAssertTrue(errorResponse.reason.contains("'password' must contain special character"))
     }
     
-    func testUsernameTakenValidation() throws {
-        let username = "testUser"
+    func testEmailTakenValidation() throws {
+        let email = "test@test.com"
         let password = "testPwd1#"
         
-        let request = RegisterUserRequest(username: username, password: password)
+        let request = RegisterUserRequest(email: email, password: password)
         
         let _ = try self.tryRegisterUser(request: request, decodeTo: PublicUserResponse.self)
         
@@ -137,7 +137,7 @@ class RegisterUserTests: XCTestCase {
         XCTAssertNotNil(errorResponse)
         XCTAssertNotNil(status)
         XCTAssertEqual(status, .badRequest)
-        XCTAssertTrue(errorResponse.reason.contains("username already taken"))
+        XCTAssertTrue(errorResponse.reason.contains("email already taken"))
     }
     
     private func tryRegisterUser<T: Content>(request: RegisterUserRequest, decodeTo decodeType: T.Type) throws -> (T, HTTPResponseStatus)  {
