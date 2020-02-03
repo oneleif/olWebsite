@@ -24,9 +24,9 @@ WORKDIR /app
 COPY --from=builder /build/bin/Run .
 COPY --from=builder /build/lib/* /usr/lib/
 # Uncomment the next line if you need to load resources from the `Public` directory
-#COPY --from=builder /app/Public ./Public
+COPY --from=builder /app/Public ./Public
 # Uncomment the next line if you are using Leaf
-#COPY --from=builder /app/Resources ./Resources
+COPY --from=builder /app/Resources ./Resources
 ENV ENVIRONMENT=$env
 
 ENTRYPOINT ./Run serve --env $ENVIRONMENT --hostname 0.0.0.0 --port 80
