@@ -17,10 +17,4 @@ public func routes(_ router: Router) throws {
     
     let imperialController = ImperialController()
     try router.register(collection: imperialController)
-
-    let baseController = BaseRouteController()
-    try router.register(collection: baseController)
-
-    let authController = AuthRouteController()
-    try router.register(collection: authController)
 }
