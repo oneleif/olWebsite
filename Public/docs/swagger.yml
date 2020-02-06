@@ -17,6 +17,7 @@ servers:
     description: Main (production) server
 
 paths:
+  # user controller
   /register:
     post:
       tags:
@@ -51,9 +52,10 @@ paths:
           $ref: "#/components/responses/401Unauthorized"
         default:
           $ref: "#/components/responses/GenericError"
-
   /logout:
     get:
+      security:
+        - cookieAuth: []
       tags:
         - user
       summary: Logout user
@@ -168,3 +170,9 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/Error"
+
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: session
