@@ -9,7 +9,7 @@ info:
 
     Find out more on our [Discord](https://discordapp.com/invite/tv9UdJK) server.
   x-logo:
-    url: https://oneleif-frontend-prod.s3.us-east-2.amazonaws.com/static/media/homeLogo.d382f3f4.png
+    url: ../logo.png
     altText: oneleif logo
 
 servers:
