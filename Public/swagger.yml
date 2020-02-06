@@ -1,0 +1,167 @@
+openapi: 3.0.0
+info:
+  title: oneleif API
+  version: 0.0.1
+  description: |
+    API documentation of oneleif backend.
+
+    You can find this project [here on GitHub](https://github.com/oneleif/olWebsite).
+
+    Find out more on our [Discord](https://discordapp.com/invite/tv9UdJK) server.
+
+servers:
+  - url: http://ec2-18-222-87-195.us-east-2.compute.amazonaws.com/api
+    description: Main (production) server
+
+paths:
+  /register:
+    post:
+      tags:
+        - user
+      summary: Register user
+      description: Registers new user in the system
+      operationId: register
+      requestBody:
+        $ref: "#/components/requestBodies/RegisterUserRequestBody"
+      responses:
+        "201":
+          description: User successfully registered
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          $ref: "#/components/responses/400BadRequest"
+  /login:
+    post:
+      tags:
+        - auth
+      summary: Authenticate user
+      description: Authenticates the user and creates new session
+      operationId: login
+      requestBody:
+        $ref: "#/components/requestBodies/LoginRequestBody"
+      responses:
+        "200":
+          description: User successfully authenticated
+        "401":
+          $ref: "#/components/responses/401Unauthorized"
+        default:
+          $ref: "#/components/responses/GenericError"
+
+  /logout:
+    get:
+      tags:
+        - auth
+      summary: Logout user
+      description: Ends user session
+      operationId: logout
+      responses:
+        "204":
+          description: User successfully logged out
+        default:
+          $ref: "#/components/responses/GenericError"
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: number
+          readOnly: true
+        email:
+          type: string
+        password:
+          type: string
+          writeOnly: true
+        social:
+          $ref: "#/components/schemas/SocialInformation"
+          readOnly: true
+
+    SocialInformation:
+      title: Social Information
+      type: object
+      properties:
+        id:
+          type: number
+          readOnly: true
+        username:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        discordUsername:
+          type: string
+        githubUsername:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        profileImage:
+          type: string
+        biography:
+          type: string
+        links:
+          type: array
+          items:
+            type: string
+        location:
+          type: string
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: boolean
+        reason:
+          type: string
+
+  requestBodies:
+    RegisterUserRequestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              email:
+                type: string
+              password:
+                type: string
+
+    LoginRequestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              email:
+                type: string
+              password:
+                type: string
+
+  responses:
+    400BadRequest:
+      description: Validation error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    401Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    GenericError:
+      description: Something went wrong
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
