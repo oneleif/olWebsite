@@ -10,7 +10,7 @@ case $DEPLOYMENT_GROUP_NAME in
 esac
 
 # wait for application start on $PORT
-while ! nc -z localhost $PORT </dev/null; do sleep 10; done
+while ! nc -q 1 localhost $PORT </dev/null; do sleep 10; done
 
 HEALTH_CHECK_URL=localhost:$PORT/docs/index.html
 
