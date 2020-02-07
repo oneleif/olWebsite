@@ -1,43 +1,57 @@
-version: 2
+version: 2.1
+
+orbs:
+  aws-s3: circleci/aws-s3@1.0.15
 
 jobs:
-  linux:
+  test:
     docker:
       - image: swift:4.1
     steps:
       - checkout
-      - run: 
+      - run:
           name: Compile code
           command: swift build
-      - run: 
+      - run:
           name: Run unit tests
           command: swift test
 
-  linux-release:
+  test-release:
     docker:
       - image: swift:4.1
     steps:
       - checkout
-      - run: 
+      - run:
           name: Compile code with optimizations
           command: swift build -c release
 
+  build-and-deploy-image:
+    docker:
+      - image: swift:4.1
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Build docker release image
+          command: docker build -t oneleif-api:latest -f web.Dockerfile --build-arg env=production  .
+      - run:
+          name: Create image archives
+          command: |
+            docker save oneleif-api:latest | gzip > oneleif-api.$CIRCLE_SHA1.tar.gz
+            cp oneleif-api.$CIRCLE_SHA1.tar.gz oneleif-api.latest.tar.gz
+            mkdir -p images && mv oneleif-api.*.tar.gz images/
+      - aws-s3/sync:
+          from: images
+          to: $S3_DOCKER_IMAGES_BUCKET_URL/production
+          overwrite: true
+
 workflows:
   version: 2
-  tests:
+  build-and-deploy:
     jobs:
-      - linux
-      - linux-release
-
-  nightly:
-    triggers:
-      - schedule:
-          cron: "0 0 * * *"
-          filters:
-            branches:
-              only:
-                - master
-    jobs:
-      - linux
-      - linux-release
-      
+      - test
+      - test-release
+      - build-and-deploy-image:
+          requires:
+            - test
+            - test-release
