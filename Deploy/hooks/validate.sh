@@ -7,18 +7,22 @@ case $DEPLOYMENT_GROUP_NAME in
   "staging")
     PORT=8080
     ;;
+  *)
+    PORT=8888
+    ;;
 esac
 
 # wait for application start on $PORT
-while ! nc -q 1 localhost $PORT </dev/null; do sleep 10; done
+while ! bash -c "echo >/dev/tcp/localhost/$PORT"; do sleep 1; done
 
 HEALTH_CHECK_URL=localhost:$PORT/docs/index.html
 
 STATUS_CODE=$(curl --write-out %{http_code} --silent --output /dev/null $HEALTH_CHECK_URL)
 
 if [[ "$STATUS_CODE" -ne 200 ]] ; then
-  echo "Status code is not 200 ($STATUS_CODE), failed deployment"
+  echo "Status code is not 200 ($STATUS_CODE), deployment failed"
   exit 1
 else
+  echo "Request successful: $STATUS_CODE"
   exit 0
 fi

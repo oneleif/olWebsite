@@ -2,7 +2,7 @@
 
 # clean up
 CONTAINER_NAME=oneleif-api-$DEPLOYMENT_GROUP_NAME
-IMAGE_FILE=$(find . -name "oneleif-api.*.tar.gz" | head -n 1)
+IMAGE_FILE=$(find .. -name "oneleif-api.*.tar.gz" | head -n 1)
 
 case $DEPLOYMENT_GROUP_NAME in
   "production")
@@ -10,6 +10,9 @@ case $DEPLOYMENT_GROUP_NAME in
     ;;
   "staging")
     PORT=8080
+    ;;
+  *)
+    PORT=8888
     ;;
 esac
 
