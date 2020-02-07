@@ -23,6 +23,9 @@ RUN apt-get -qq update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
 WORKDIR /app
 COPY --from=builder /build/bin/Run .
 COPY --from=builder /build/lib/* /usr/lib/
+# Uncomment the next line if you need to load resources from the `Public` directory
+COPY --from=builder /app/Public ./Public
+
 
 ENV ENVIRONMENT=$env
 
