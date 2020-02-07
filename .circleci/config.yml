@@ -39,6 +39,7 @@ jobs:
       - run:
           name: Create revision bundle
           command: |
+            mkdir -p $BUNDLE_DIR
             docker save oneleif-api | gzip > $BUNDLE_DIR/oneleif-api.$CIRCLE_SHA1.tar.gz
             cp -r Deploy/* $BUNDLE_DIR/
       - aws-code-deploy/push-bundle:
