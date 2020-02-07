@@ -2,6 +2,7 @@ version: 2.1
 
 orbs:
   aws-code-deploy: circleci/aws-code-deploy@1.0.0
+  aws-cli: circleci/aws-cli@0.1.20
 
 jobs:
   test:
@@ -42,6 +43,7 @@ jobs:
             mkdir -p $BUNDLE_DIR
             docker save oneleif-api | gzip > $BUNDLE_DIR/oneleif-api.$CIRCLE_SHA1.tar.gz
             cp -r Deploy/* $BUNDLE_DIR/
+      - aws-cli/setup
       - aws-code-deploy/push-bundle:
           application-name: $CODE_DEPLOY_APP_NAME
           bundle-bucket: $CODE_DEPLOY_BUNDLE_BUCKET
