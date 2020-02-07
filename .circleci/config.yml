@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  aws-s3: circleci/aws-s3@1.0.15
+  aws-code-deploy: circleci/aws-code-deploy@1.0.0
 
 jobs:
   test:
@@ -25,7 +25,7 @@ jobs:
           name: Compile code with optimizations
           command: swift build -c release
 
-  build-and-deploy-image:
+  build-and-deploy:
     docker:
       - image: circleci/golang:latest
     steps:
@@ -37,15 +37,20 @@ jobs:
             docker build -t oneleif-api:latest -f web.Dockerfile --build-arg env=production  .
             docker tag oneleif-api:latest oneleif-api:$CIRCLE_SHA1
       - run:
-          name: Create image archives
+          name: Create revision bundle
           command: |
-            docker save oneleif-api:latest | gzip > oneleif-api.latest.tar.gz
-            docker save oneleif-api:$CIRCLE_SHA1 | gzip > oneleif-api.$CIRCLE_SHA1.tar.gz
-            mkdir -p images && mv oneleif-api.*.tar.gz images/
-      - aws-s3/sync:
-          from: images
-          to: $S3_DOCKER_IMAGES_BUCKET_URL/production
-          overwrite: true
+            docker save oneleif-api | gzip > $BUNDLE_DIR/oneleif-api.$CIRCLE_SHA1.tar.gz
+            cp -r Deploy/* $BUNDLE_DIR/
+      - aws-code-deploy/push-bundle:
+          application-name: $CODE_DEPLOY_APP_NAME
+          bundle-bucket: $CODE_DEPLOY_BUNDLE_BUCKET
+          bundle-key: production/$CIRCLE_SHA1
+          bundle-source: $BUNDLE_DIR
+      - aws-code-deploy/deploy-bundle:
+          application-name: $CODE_DEPLOY_APP_NAME
+          bundle-bucket: $CODE_DEPLOY_BUNDLE_BUCKET
+          bundle-key: production/$CIRCLE_SHA1
+          deployment-group: production
 
 workflows:
   version: 2
@@ -53,7 +58,7 @@ workflows:
     jobs:
       - test
       - test-release
-      - build-and-deploy-image:
+      - build-and-deploy:
           requires:
             - test
             - test-release
