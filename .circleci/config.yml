@@ -44,7 +44,7 @@ jobs:
             docker save oneleif-api | gzip > $BUNDLE_DIR/oneleif-api.$CIRCLE_SHA1.tar.gz
             cp -r Deploy/* $BUNDLE_DIR/
       - aws-cli/setup:
-          aws-region: $AWS_REGION
+          aws-region: AWS_REGION
       - aws-code-deploy/push-bundle:
           application-name: $CODE_DEPLOY_APP_NAME
           bundle-bucket: $CODE_DEPLOY_BUNDLE_BUCKET
