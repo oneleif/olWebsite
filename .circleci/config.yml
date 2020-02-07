@@ -36,12 +36,14 @@ jobs:
       - setup_remote_docker
       - run:
           name: Build docker release image
-          command: docker build -t oneleif-api:latest -f web.Dockerfile --build-arg env=production  .
+          command: |
+            docker build -t oneleif-api:latest -f web.Dockerfile --build-arg env=production  .
+            docker tag oneleif-api:latest oneleif-api:$CIRCLE_SHA1
       - run:
           name: Create image archives
           command: |
-            docker save oneleif-api:latest | gzip > oneleif-api.$CIRCLE_SHA1.tar.gz
-            cp oneleif-api.$CIRCLE_SHA1.tar.gz oneleif-api.latest.tar.gz
+            docker save oneleif-api:latest | gzip > oneleif-api.latest.tar.gz
+            docker save oneleif-api:$CIRCLE_SHA1 | gzip > oneleif-api.$CIRCLE_SHA1.tar.gz
             mkdir -p images && mv oneleif-api.*.tar.gz images/
       - aws-s3/sync:
           from: images
