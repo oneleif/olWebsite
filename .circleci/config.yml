@@ -30,9 +30,6 @@ jobs:
       - image: circleci/golang:latest
     steps:
       - checkout
-      - run:
-          name: Install Docker client
-          command: apk add docker-cli
       - setup_remote_docker
       - run:
           name: Build docker release image
