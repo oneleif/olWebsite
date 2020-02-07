@@ -27,7 +27,7 @@ jobs:
 
   build-and-deploy-image:
     docker:
-      - image: alpine:latest
+      - image: circleci/golang:latest
     steps:
       - checkout
       - run:
