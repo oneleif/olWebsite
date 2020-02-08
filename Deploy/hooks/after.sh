@@ -3,7 +3,7 @@
 CONTAINER_NAME=oneleif-api-$DEPLOYMENT_GROUP_NAME
 IMAGE_FILE=$(find .. -name "oneleif-api.*.tar.gz" | head -n 1)
 
-PORT=$(./port.sh)
+PORT=$(source ./port.sh)
 
 echo "Deploying oneleif-api ($DEPLOYMENT_GROUP_NAME) on port $PORT..."
 

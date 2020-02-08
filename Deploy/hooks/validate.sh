@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PORT=$(./port.sh)
+PORT=$(source ./port.sh)
 
 # wait for application start on $PORT
 while ! bash -c "echo >/dev/tcp/localhost/$PORT"; do sleep 1; done
