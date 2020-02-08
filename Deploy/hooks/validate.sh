@@ -1,16 +1,6 @@
 #!/bin/bash
 
-case $DEPLOYMENT_GROUP_NAME in
-  "production")
-    PORT=80
-    ;;
-  "staging")
-    PORT=8080
-    ;;
-  *)
-    PORT=8888
-    ;;
-esac
+PORT=$(./port.sh)
 
 # wait for application start on $PORT
 while ! bash -c "echo >/dev/tcp/localhost/$PORT"; do sleep 1; done
