@@ -1,43 +1,73 @@
-version: 2
+version: 2.1
+
+orbs:
+  aws-code-deploy: circleci/aws-code-deploy@1.0.0
+  aws-cli: circleci/aws-cli@0.1.20
 
 jobs:
-  linux:
+  test:
     docker:
       - image: swift:4.1
     steps:
       - checkout
-      - run: 
+      - run:
           name: Compile code
           command: swift build
-      - run: 
+      - run:
           name: Run unit tests
           command: swift test
 
-  linux-release:
+  test-release:
     docker:
       - image: swift:4.1
     steps:
       - checkout
-      - run: 
+      - run:
           name: Compile code with optimizations
           command: swift build -c release
 
+  build-and-deploy:
+    docker:
+      - image: circleci/golang:latest
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Build docker release image
+          command: |
+            docker build -t oneleif-api:latest -f web.Dockerfile --build-arg env=production  .
+            docker tag oneleif-api:latest oneleif-api:$CIRCLE_SHA1
+      - run:
+          name: Create revision bundle
+          command: |
+            mkdir -p $BUNDLE_DIR
+            docker save oneleif-api | gzip > $BUNDLE_DIR/oneleif-api.$CIRCLE_SHA1.tar.gz
+            cp -r Deploy/* $BUNDLE_DIR/
+      - aws-cli/setup:
+          aws-region: AWS_REGION
+      - aws-code-deploy/push-bundle:
+          application-name: $CODE_DEPLOY_APP_NAME
+          bundle-bucket: $CODE_DEPLOY_BUNDLE_BUCKET
+          bundle-key: production/$CIRCLE_SHA1
+          bundle-source: $BUNDLE_DIR
+      - aws-code-deploy/deploy-bundle:
+          application-name: $CODE_DEPLOY_APP_NAME
+          bundle-bucket: $CODE_DEPLOY_BUNDLE_BUCKET
+          bundle-key: production/$CIRCLE_SHA1
+          deployment-group: production
+
 workflows:
   version: 2
-  tests:
+  build-and-deploy:
     jobs:
-      - linux
-      - linux-release
-
-  nightly:
-    triggers:
-      - schedule:
-          cron: "0 0 * * *"
+      - test
+      - test-release
+      - build-and-deploy:
+          requires:
+            - test
+            - test-release
           filters:
             branches:
               only:
                 - master
-    jobs:
-      - linux
-      - linux-release
-      
+          context: oneleif-aws

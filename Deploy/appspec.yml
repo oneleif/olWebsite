@@ -1,0 +1,19 @@
+# For help completing this file, see the "AppSpec File Reference" in the
+#   "CodeDeploy User Guide" at
+#   https://docs.aws.amazon.com/codedeploy/latest/userguide/app-spec-ref.html
+version: 0.0
+os: linux
+
+files:
+  - source: .
+    destination: /tmp/deploy-data/oneleif-api
+
+hooks:
+  AfterInstall:
+    - location: hooks/after.sh
+      timeout: 300
+      runas: root
+  ValidateService:
+    - location: hooks/validate.sh
+      timeout: 300
+      runas: root
