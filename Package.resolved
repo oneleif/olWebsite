@@ -56,6 +56,15 @@
         }
       },
       {
+        "package": "FluentPostgreSQL",
+        "repositoryURL": "https://github.com/vapor/fluent-postgresql.git",
+        "state": {
+          "branch": null,
+          "revision": "8e3eb9d24d54ac58c8d04c194ad6b24f0b1b667e",
+          "version": "1.0.0"
+        }
+      },
+      {
         "package": "FluentSQLite",
         "repositoryURL": "https://github.com/vapor/fluent-sqlite.git",
         "state": {
@@ -69,8 +78,8 @@
         "repositoryURL": "https://github.com/vapor/http.git",
         "state": {
           "branch": null,
-          "revision": "3808ed0401379b6e9f4a053f03090ea9d658caa9",
-          "version": "3.2.1"
+          "revision": "fba1329cd430e2f9a3f995b317b04f268d8b2978",
+          "version": "3.3.2"
         }
       },
       {
@@ -78,8 +87,8 @@
         "repositoryURL": "https://github.com/vapor-community/Imperial.git",
         "state": {
           "branch": null,
-          "revision": "d71416e65c48c0ae3b845d4b627cab4118d2434f",
-          "version": "0.14.0"
+          "revision": "06b932e4a9d8f94be4b82e0cabf64c6f08144663",
+          "version": "0.15.0"
         }
       },
       {
@@ -98,6 +107,15 @@
           "branch": null,
           "revision": "f063180d0b84832accd33194e06ed3c41f8609ac",
           "version": "3.1.1"
+        }
+      },
+      {
+        "package": "PostgreSQL",
+        "repositoryURL": "https://github.com/vapor/postgresql.git",
+        "state": {
+          "branch": null,
+          "revision": "69ccf32e9164b207f9a773edac5433fe68ae3e5b",
+          "version": "1.5.0"
         }
       },
       {
@@ -141,8 +159,8 @@
         "repositoryURL": "https://github.com/apple/swift-nio.git",
         "state": {
           "branch": null,
-          "revision": "ba7970fe396e8198b84c6c1b44b38a1d4e2eb6bd",
-          "version": "1.14.1"
+          "revision": "8da5c5a4e6c5084c296b9f39dc54f00be146e0fa",
+          "version": "1.14.2"
         }
       },
       {
@@ -186,8 +204,8 @@
         "repositoryURL": "https://github.com/vapor/url-encoded-form.git",
         "state": {
           "branch": null,
-          "revision": "82d8d63bdb76b6dd8febe916c639ab8608dbbaed",
-          "version": "1.0.6"
+          "revision": "20f68fbe7fac006d4d0617ea4edcba033227359e",
+          "version": "1.1.0"
         }
       },
       {
@@ -204,8 +222,8 @@
         "repositoryURL": "https://github.com/vapor/vapor.git",
         "state": {
           "branch": null,
-          "revision": "92a58a9a84e4330500b99fe355a94d29f67abe58",
-          "version": "3.3.1"
+          "revision": "642f3d4d1f0eafad651c85524d0d1c698b55399f",
+          "version": "3.3.3"
         }
       },
       {
