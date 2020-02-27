@@ -1,6 +1,7 @@
 import XCTest
-@testable import App
- 
+@testable import AppTests
+
 XCTMain([
     testCase(RegisterUserTests.allTests),
+    testCase(ValidatorServiceTests.allTests)
 ])
