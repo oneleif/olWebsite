@@ -12,7 +12,6 @@ jobs:
         environment:
           POSTGRES_USER: oneleif 
           POSTGRES_DB: website
-          POSTGRES_PASSWORD: "sudo"
     steps:
       - checkout
       - run:
