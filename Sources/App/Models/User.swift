@@ -5,7 +5,7 @@
 //  Created by Zach Eriksen on 3/21/19.
 //
 
-import FluentSQLite
+import FluentPostgreSQL
 import Vapor
 import Authentication
 
@@ -24,7 +24,7 @@ struct SocialInformation: Content {
     var location: String = ""
 }
 
-final class User: SQLiteModel {
+final class User: PostgreSQLModel {
     var id: Int?
     // Auth Information
     var email: String

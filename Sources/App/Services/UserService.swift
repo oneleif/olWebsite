@@ -1,5 +1,6 @@
 import Vapor
-import FluentSQL
+// import FluentSQL
+import FluentPostgreSQL
 import Crypto
 import Authentication
 
@@ -8,7 +9,7 @@ class UserService: Service {
         let hashedPassword = try BCryptDigest().hash(registerRequest.password)
         let user = User(email: registerRequest.email, password: hashedPassword)
         
-        return connection.transaction(on: .sqlite) { (conn) -> EventLoopFuture<User> in
+        return connection.transaction(on: .psql) { (conn) -> EventLoopFuture<User> in
             return user.save(on: conn).flatMap { (user) -> EventLoopFuture<User> in
                 user.social = self.newSocialInformation(for: user)
                 return user.save(on: connection)
