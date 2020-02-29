@@ -11,7 +11,7 @@ jobs:
       - image: circleci/postgres:latest
         environment:
           POSTGRES_USER: oneleif 
-          POSTGRES_DB: website
+          POSTGRES_DB: oneleif-develop
     steps:
       - checkout
       - run:
@@ -27,7 +27,7 @@ jobs:
       - image: circleci/postgres:latest
         environment:
           POSTGRES_USER: oneleif 
-          POSTGRES_DB: website
+          POSTGRES_DB: oneleif-release
     steps:
       - checkout
       - run:
