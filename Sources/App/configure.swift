@@ -31,7 +31,6 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
     config.prefer(MemoryKeyedCache.self, for: KeyedCache.self)
 
     // Configure a PostgreSQL database
-    let config = PostgreSQLDatabaseConfig(hostname: "localhost", port: 5432, username: "postgres", database: "website", transport: .cleartext)
     let config = PostgreSQLDatabaseConfig(hostname: Environment.get("DB_HOST") ?? "localhost", 
                                           port: Int(Environment.get("DB_PORT") ?? "") ?? 5432, 
                                           username: Environment.get("DB_USER") ?? "oneleif", 
