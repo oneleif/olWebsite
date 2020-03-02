@@ -13,7 +13,7 @@ jobs:
           POSTGRES_USER: oneleif
           POSTGRES_PASSWORD: root
           POSTGRES_DB: oneleif-testing
-          POSTGRES_HOST_AUTH_METHOD: password
+          POSTGRES_INITDB_ARGS: --auth-local password --auth-host password
     steps:
       - checkout
       - run:
