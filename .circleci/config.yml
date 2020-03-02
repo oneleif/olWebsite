@@ -12,7 +12,7 @@ jobs:
         environment:
           POSTGRES_USER: oneleif
           POSTGRES_PASSWORD: root
-          POSTGRES_DB: oneleif-develop
+          POSTGRES_DB: oneleif-testing
     steps:
       - checkout
       - run:
