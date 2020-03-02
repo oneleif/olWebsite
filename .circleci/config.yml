@@ -10,7 +10,8 @@ jobs:
       - image: swift:4.1
       - image: circleci/postgres:latest
         environment:
-          POSTGRES_USER: oneleif 
+          POSTGRES_USER: oneleif
+          POSTGRES_PASSWORD: root
           POSTGRES_DB: oneleif-develop
     steps:
       - checkout
@@ -24,10 +25,6 @@ jobs:
   test-release:
     docker:
       - image: swift:4.1
-      - image: circleci/postgres:latest
-        environment:
-          POSTGRES_USER: oneleif 
-          POSTGRES_DB: oneleif-release
     steps:
       - checkout
       - run:
