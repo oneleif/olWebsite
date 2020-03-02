@@ -1,6 +1,6 @@
 import Vapor
 import App
-import FluentSQLite
+import FluentPostgreSQL
 
 struct EmptyContent: Content {}
 

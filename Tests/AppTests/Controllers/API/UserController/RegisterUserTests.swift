@@ -1,21 +1,21 @@
 @testable import App
 import Vapor
 import XCTest
-import FluentSQLite
+import FluentPostgreSQL
 
-class RegisterUserTests: XCTestCase {
+final class RegisterUserTests: XCTestCase {
     let registerUri = "/api/register"
     
     var app: Application!
-    var connection: SQLiteConnection!
+    var connection: PostgreSQLConnection!
     
-    override func setUp() {
+    public override func setUp() {
         try! Application.resetDatabase()
         self.app = try! Application.testable()
-        self.connection = try! app.newConnection(to: .sqlite).wait()
+        self.connection = try! app.newConnection(to: .psql).wait()
     }
     
-    override func tearDown() {
+    public override func tearDown() {
         self.connection.close()
         try? self.app.syncShutdownGracefully()
     }
@@ -153,4 +153,15 @@ class RegisterUserTests: XCTestCase {
         
         return (decoded, status)
     }
+
+    public static let allTests = [
+        ("testEmailTakenValidation", testEmailTakenValidation),
+        ("testPasswordMissingSpecialCharacterValidation", testPasswordMissingSpecialCharacterValidation),
+        ("testPasswordMissingDigitValidation", testPasswordMissingDigitValidation),
+        ("testPasswordMissingUppercaseLetterValidation", testPasswordMissingUppercaseLetterValidation),
+        ("testPasswordMissingLowercaseLetterValidation", testPasswordMissingLowercaseLetterValidation),
+        ("testPasswordTooShortValidation", testPasswordTooShortValidation),
+        ("testInvalidEmailValidation", testInvalidEmailValidation),
+        ("testUserCanRegister", testUserCanRegister)
+    ]
 }

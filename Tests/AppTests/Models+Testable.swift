@@ -1,9 +1,9 @@
 @testable import App
-import FluentSQLite
+import FluentPostgreSQL
 
 extension User {
     static func create(email: String = "test@test.com", password: String = "testPwd",
-                       on connection: SQLiteConnection) throws -> User {
+                       on connection: PostgreSQLConnection) throws -> User {
         let user = User(email: email, password: password)
         return try user.save(on: connection).wait()
     }

@@ -75,4 +75,12 @@ class ValidatorServiceTests: XCTestCase {
         XCTAssertThrowsError(try self.validator.validate(self.invalidDummy))
         XCTAssertNoThrow(try self.validator.validate(self.invalidDummier))
     }
+
+    public static var allTests = [
+      ("testShouldValidateWithDefaultSetting", testShouldValidateWithDefaultSetting),
+      ("testShouldSkipAllValidations", testShouldSkipAllValidations),
+      ("testShouldSkipAllValidations", testShouldSkipAllValidations),
+      ("testShouldValidateForcedEvenWhenValidationIsSkipped", testShouldValidateForcedEvenWhenValidationIsSkipped),
+      ("testShouldNotValidateIgnored", testShouldNotValidateIgnored)
+    ]
 }
