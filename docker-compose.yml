@@ -1,0 +1,18 @@
+version: "3.1"
+
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: oneleif
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: oneleif-development
+    ports:
+      - 5432:5432
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8081:8080
