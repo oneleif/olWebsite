@@ -44,19 +44,25 @@ class UserController: RouteCollection {
         }
     }
     
-    func login(_ req: Request, _ loginRequest: LoginRequest) throws -> Future<HTTPStatus> {
+    func login(_ req: Request, _ loginRequest: LoginRequest) throws -> Future<HTTPResponse> {
         let userService = try req.make(UserService.self)
         
         return userService.authorize(
             email: loginRequest.email,
             password: loginRequest.password,
             on: req
-        ).map { user in
+        )
+        .map(to: PublicUserResponse.self) { user in
             guard let user = user else {
-                return .unauthorized
+                throw BasicValidationError("Could not authorize User")
             }
             try req.authenticateSession(user)
-            return .ok
+            return PublicUserResponse(id: user.id, email: user.email, social: user.social)
+        }
+        .map(to: HTTPResponse.self) { publicUser in
+            var response = HTTPResponse(status: .created)
+            try JSONEncoder().encode(publicUser, to: &response, on: req)
+            return response
         }
     }
     
