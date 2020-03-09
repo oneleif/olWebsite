@@ -54,7 +54,7 @@ class UserController: RouteCollection {
         )
         .map(to: PublicUserResponse.self) { user in
             guard let user = user else {
-                throw BasicValidationError("Could not authorize User")
+                throw Abort(.unauthorized)
             }
             try req.authenticateSession(user)
             return PublicUserResponse(id: user.id, email: user.email, social: user.social)
