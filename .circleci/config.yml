@@ -95,9 +95,9 @@ workflows:
           #       - develop
           context: oneleif-aws
       - build-and-deploy-production:
-          requires:
-            - test
-            - test-release
+          # requires:
+          #   - test
+          #   - test-release
           filters:
             branches:
               only:
