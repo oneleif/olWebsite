@@ -29,11 +29,4 @@ docker rm $CONTAINER_NAME || true
 docker load -i $IMAGE_FILE
 
 # start new version
-docker run \ 
-  --env-file $ENV_FILE_PATH \
-  --name $CONTAINER_NAME \
-  --network $NETWORK_NAME \
-  --publish $PORT:80 \
-  --restart $RESTART_POLICY \
-  --detach \
-  $IMAGE_NAME
+docker run --env-file $ENV_FILE_PATH --name $CONTAINER_NAME --network $NETWORK_NAME --publish $PORT:80 --restart $RESTART_POLICY --detach $IMAGE_NAME
