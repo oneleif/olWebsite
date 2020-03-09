@@ -93,6 +93,7 @@ workflows:
           #   branches:
           #     only:
           #       - develop
+          context: oneleif-aws
       - build-and-deploy-production:
           requires:
             - test
