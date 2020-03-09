@@ -25,4 +25,4 @@ docker rm $CONTAINER_NAME || true
 docker load -i $IMAGE_FILE
 
 # start new version
-docker run --restart=on-failure:10 --name $CONTAINER_NAME -p $PORT:80 -d oneleif-api
+docker run --restart=on-failure:10 --name $CONTAINER_NAME -p $PORT:80 -d --env-file /home/ubuntu/oneleif-env/$DEPLOYMENT_GROUP_NAME.env oneleif-api
