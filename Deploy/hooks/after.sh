@@ -5,10 +5,10 @@ IMAGE_FILE=$(find .. -name "oneleif-api.*.tar.gz" | head -n 1)
 
 case $DEPLOYMENT_GROUP_NAME in
   "production")
-    PORT=80
+    PORT=8080
     ;;
   "staging")
-    PORT=8080
+    PORT=8081
     ;;
   *)
     PORT=8888
