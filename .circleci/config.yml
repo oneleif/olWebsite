@@ -83,21 +83,21 @@ workflows:
   version: 2
   build-and-deploy:
     jobs:
-      # - test
-      # - test-release
+      - test
+      - test-release
       - build-and-deploy-staging:
-          # requires:
-          #   - test
-          #   - test-release
-          # filters:
-          #   branches:
-          #     only:
-          #       - develop
+          requires:
+            - test
+            - test-release
+          filters:
+            branches:
+              only:
+                - develop
           context: oneleif-aws
       - build-and-deploy-production:
-          # requires:
-          #   - test
-          #   - test-release
+          requires:
+            - test
+            - test-release
           filters:
             branches:
               only:
