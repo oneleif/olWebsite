@@ -4,10 +4,6 @@
 version: 0.0
 os: linux
 
-files:
-  - source: .
-    destination: /tmp/deploy-data/oneleif-api
-
 hooks:
   AfterInstall:
     - location: hooks/after.sh
