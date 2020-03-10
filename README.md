@@ -1,7 +1,7 @@
 # oneleif Website and API
 ## olGO
 
-![](Public/images/oneleif.png)
+![](https://github.com/oneleif/olDocs/blob/master/assets/images/oneleif_logos/full_logo/oneleif_whiteback.png)
 
 ### Project Info
 
