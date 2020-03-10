@@ -8,6 +8,7 @@ services:
       POSTGRES_USER: oneleif
       POSTGRES_PASSWORD: root
       POSTGRES_DB: oneleif-development
+      POSTGRES_INITDB_ARGS: --auth-local password --auth-host password
     ports:
       - 5432:5432
 
@@ -15,4 +16,4 @@ services:
     image: adminer
     restart: always
     ports:
-      - 8081:8080
+      - 15432:8080

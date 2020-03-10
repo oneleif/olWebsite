@@ -4,6 +4,39 @@ orbs:
   aws-code-deploy: circleci/aws-code-deploy@1.0.0
   aws-cli: circleci/aws-cli@0.1.20
 
+commands:
+  deploy-to-aws:
+    parameters:
+      environment:
+        type: string
+        default: staging
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Build docker release image
+          command: |
+            docker build -t oneleif-api:latest -f web.Dockerfile --build-arg env=<< parameters.environment >>  .
+            docker tag oneleif-api:latest oneleif-api:$CIRCLE_SHA1
+      - run:
+          name: Create revision bundle
+          command: |
+            mkdir -p $BUNDLE_DIR
+            docker save oneleif-api | gzip > $BUNDLE_DIR/oneleif-api.$CIRCLE_SHA1.tar.gz
+            cp -r Deploy/* $BUNDLE_DIR/
+      - aws-cli/setup:
+          aws-region: AWS_REGION
+      - aws-code-deploy/push-bundle:
+          application-name: $CODE_DEPLOY_APP_NAME
+          bundle-bucket: $CODE_DEPLOY_BUNDLE_BUCKET
+          bundle-key: << parameters.environment >>/$CIRCLE_SHA1
+          bundle-source: $BUNDLE_DIR
+      - aws-code-deploy/deploy-bundle:
+          application-name: $CODE_DEPLOY_APP_NAME
+          bundle-bucket: $CODE_DEPLOY_BUNDLE_BUCKET
+          bundle-key: << parameters.environment >>/$CIRCLE_SHA1
+          deployment-group: << parameters.environment >>
+
 jobs:
   test:
     docker:
@@ -32,35 +65,19 @@ jobs:
           name: Compile code with optimizations
           command: swift build -c release
 
-  build-and-deploy:
+  build-and-deploy-staging:
     docker:
       - image: circleci/golang:latest
     steps:
-      - checkout
-      - setup_remote_docker
-      - run:
-          name: Build docker release image
-          command: |
-            docker build -t oneleif-api:latest -f web.Dockerfile --build-arg env=production  .
-            docker tag oneleif-api:latest oneleif-api:$CIRCLE_SHA1
-      - run:
-          name: Create revision bundle
-          command: |
-            mkdir -p $BUNDLE_DIR
-            docker save oneleif-api | gzip > $BUNDLE_DIR/oneleif-api.$CIRCLE_SHA1.tar.gz
-            cp -r Deploy/* $BUNDLE_DIR/
-      - aws-cli/setup:
-          aws-region: AWS_REGION
-      - aws-code-deploy/push-bundle:
-          application-name: $CODE_DEPLOY_APP_NAME
-          bundle-bucket: $CODE_DEPLOY_BUNDLE_BUCKET
-          bundle-key: production/$CIRCLE_SHA1
-          bundle-source: $BUNDLE_DIR
-      - aws-code-deploy/deploy-bundle:
-          application-name: $CODE_DEPLOY_APP_NAME
-          bundle-bucket: $CODE_DEPLOY_BUNDLE_BUCKET
-          bundle-key: production/$CIRCLE_SHA1
-          deployment-group: production
+      - deploy-to-aws:
+          environment: staging
+
+  build-and-deploy-production:
+    docker:
+      - image: circleci/golang:latest
+    steps:
+      - deploy-to-aws:
+          environment: production
 
 workflows:
   version: 2
@@ -68,7 +85,16 @@ workflows:
     jobs:
       - test
       - test-release
-      - build-and-deploy:
+      - build-and-deploy-staging:
+          requires:
+            - test
+            - test-release
+          filters:
+            branches:
+              only:
+                - develop
+          context: oneleif-aws
+      - build-and-deploy-production:
           requires:
             - test
             - test-release
