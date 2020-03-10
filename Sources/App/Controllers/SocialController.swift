@@ -23,17 +23,29 @@ class SocialController: RouteCollection {
     }
     
     // MARK: Handlers
-    
+    /// SocialHandler
+    /// - Parameter: Request with an Authenticated `User`
+    ///
+    /// - Throws: Error `BadUser` if the `user.id` is not valid
+    ///
+    /// - Returns: `SocialInformation` of `User`
     func socialHandler(_ req: Request) throws -> Future<SocialInformation> {
         let user = try req.requireAuthenticated(User.self)
         
         guard let userId = user.id else {
             return req.future(error: BadUser())
         }
-        
+
         return Future.map(on: req) { user.social ?? SocialInformation(id: userId, username: "", firstName: "", lastName: "", email: "", discordUsername: "", githubUsername: "", tags: [], profileImage: "", biography: "", links: [], location: "") }
     }
     
+    /// UpdateSocialHandler
+    /// - Parameter: Request with an Authenticated `User`
+    ///             Body with a `SocialInformation` to update the User's `SocialInformation`
+    ///
+    /// - Throws: Error `BadUser` if the `\User.id != social.id` 
+    ///
+    /// - Returns: `SocialInformation` of `User`
     func updateSocialHandler(_ req: Request) throws -> Future<SocialInformation> {
         _ = try req.requireAuthenticated(User.self)
         
@@ -44,7 +56,7 @@ class SocialController: RouteCollection {
                     .first()
                     .flatMap { result in
                         guard let result = result else {
-                            return req.future(error: BadPost())
+                            return req.future(error: BadUser())
                         }
                         
                         result.social = social
