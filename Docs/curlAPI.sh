@@ -3,7 +3,7 @@ curl -X "POST" "https://oneleif-olwebsite.vapor.cloud/api/register" \
      -H 'Content-Type: application/json; charset=utf-8' \
      -H 'Cookie: vapor-session=QPh4F3PqH+CJKPrJ340FJQ==' \
      -d $'{
-  "username": "Leif",
+  "email": "leif@oneleif.com",
   "password": "somePassword!123"
 }'
 
@@ -12,7 +12,7 @@ curl -X "POST" "https://oneleif-olwebsite.vapor.cloud/api/login" \
      -H 'Content-Type: application/json; charset=utf-8' \
      -H 'Cookie: vapor-session=QPh4F3PqH+CJKPrJ340FJQ==' \
      -d $'{
-  "username": "Leif",
+  "email": "leif@oneleif.com",
   "password": "somePassword!123"
 }'
 

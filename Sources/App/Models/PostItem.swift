@@ -5,11 +5,11 @@
 //  Created by Zach Eriksen on 10/23/19.
 //
 
-import FluentSQLite
+import FluentPostgreSQL
 import Vapor
 import Authentication
 
-final class PostItem: SQLiteModel {
+final class PostItem: PostgreSQLModel {
     var id: Int?
     let title: String
     let description: String

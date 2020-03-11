@@ -5,7 +5,7 @@
 //  Created by Zach Eriksen on 3/21/19.
 //
 
-import FluentSQLite
+import FluentPostgreSQL
 import Vapor
 import Authentication
 
@@ -24,17 +24,17 @@ struct SocialInformation: Content {
     var location: String = ""
 }
 
-final class User: SQLiteModel {
+final class User: PostgreSQLModel {
     var id: Int?
     // Auth Information
-    var username: String
+    var email: String
     var password: String
     // Social Information
     var social: SocialInformation?
     
-    init(id: Int? = nil, username: String, password: String) {
+    init(id: Int? = nil, email: String, password: String) {
         self.id = id
-        self.username = username
+        self.email = email
         self.password = password
     }
 }
@@ -43,7 +43,7 @@ extension User: Content {}
 extension User: Migration {}
 extension User: PasswordAuthenticatable {
     static var usernameKey: WritableKeyPath<User, String> {
-        return \User.username
+        return \User.email
     }
     static var passwordKey: WritableKeyPath<User, String> {
         return \User.password

@@ -38,7 +38,7 @@
             "body": {
               "mode": "raw",
               "disabled": false,
-              "raw": "{\"username\":\"Leif\",\"password\":\"somePassword!123\"}"
+              "raw": "{\"email\":\"leif@oneleif.com\",\"password\":\"somePassword!123\"}"
             },
             "auth": null
           },
@@ -80,7 +80,7 @@
             "body": {
               "mode": "raw",
               "disabled": false,
-              "raw": "{\"username\":\"Leif\",\"password\":\"somePassword!123\"}"
+              "raw": "{\"email\":\"leif@oneleif.com\",\"password\":\"somePassword!123\"}"
             },
             "auth": null
           },
