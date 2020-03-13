@@ -7,7 +7,21 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
     // Register providers first
     try services.register(FluentPostgreSQLProvider())
     try services.register(AuthenticationProvider())
+    /// Create default content config
+    var contentConfig = ContentConfig.default()
+    /// Create custom JSON encoder
+    let jsonEncoder = JSONEncoder()
+    let formatter = DateFormatter()
+    formatter.calendar = Calendar(identifier: .iso8601)
+    formatter.locale = Locale(identifier: "en_US_POSIX")
+    formatter.timeZone = TimeZone(secondsFromGMT: 0)
+    formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSXXXXX"
+    jsonEncoder.dateEncodingStrategy = .formatted(formatter)
+
+    /// Register JSON encoder and content config
+    contentConfig.use(encoder: jsonEncoder, for: .json)
     
+    services.register(contentConfig)
     // Register routes to the router
     let router = EngineRouter.default()
     try routes(router)
