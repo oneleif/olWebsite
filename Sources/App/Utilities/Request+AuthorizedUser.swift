@@ -10,7 +10,7 @@ import JWT
 
 extension Request {
     var token: String {
-        if let token = self.http.headers[.authorization].first {
+        if let token = self.http.headers[.authorization].first?.replacingOccurrences(of: "Bearer ", with: "") {
             return token
         } else {
             return ""
