@@ -6,7 +6,7 @@ final class RefreshToken: PostgreSQLModel {
     var id: Int?
     
     fileprivate enum Constants {
-        static let refreshTokenTime: TimeInterval = 7 * 60 * 24 * 60 * 60
+        static let refreshTokenTime: TimeInterval = 14 * 24 * 60 * 60
         
     }
     
