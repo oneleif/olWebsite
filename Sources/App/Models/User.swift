@@ -49,7 +49,7 @@ extension User: PasswordAuthenticatable {
         return \User.password
     }
 }
-extension User: SessionAuthenticatable {}
+
 extension User: Parameter {
     typealias ResolvedParameter = String
     

@@ -15,12 +15,11 @@ class UserController: RouteCollection {
         
         router.post(RegisterUserRequest.self, at: "api", "register", use: self.register)
         
-        let authSessionRouter = router.grouped(User.authSessionsMiddleware())
-        authSessionRouter.post(LoginRequest.self, at: "api", "login", use: self.login)
+        router.post(LoginRequest.self, at: "api", "login", use: self.login)
+        router.post(RefreshTokenRequest.self, at: "api", "refresh-token", use: self.refreshToken)
         
         router.get("api", "logout", use: logout)
         
-        router.post(RefreshTokenRequest.self, at: "api", "refresh-token", use: self.refreshToken)
     }
     
     // MARK: Request Handlers
@@ -73,7 +72,6 @@ class UserController: RouteCollection {
     }
     
     func logout(_ req: Request) throws -> Future<HTTPStatus> {
-        try req.unauthenticateSession(User.self)
         return req.future(.noContent)
     }
 }

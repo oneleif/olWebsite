@@ -13,25 +13,26 @@ struct ImageController: RouteCollection {
     let imageFolder = "uploads/"
     
     func boot(router: Router) throws {
-        let authSessionRouter = router.grouped(User.authSessionsMiddleware())
+        let authSessionRouter = router.grouped(JWTMiddleware())
         
         authSessionRouter.post("api", "image", use: uploadImageHandler)
         authSessionRouter.get("api", "image", ImageUpload.parameter, use: getImageHandler)
     }
     
     func uploadImageHandler(_ req: Request) throws -> Future<ImageUploadResponse> {
-        let user = try req.requireAuthenticated(User.self)
-        return try req.content
-            .decode(ImageUpload.self)
-            .flatMap { imageData in
-                let name = try "\(user.requireID())-\(UUID().uuidString).jpg"
-                let path = try self.path(req, forImageNamed: name)
-                
-                FileManager().createFile(atPath: path,
-                                         contents: imageData.picture,
-                                         attributes: nil)
-                
-                return Future.map(on: req) { ImageUploadResponse(fileName: name) }
+        try req.authorizedUser().flatMap { user in
+            return try req.content
+                .decode(ImageUpload.self)
+                .flatMap { imageData in
+                    let name = try "\(user.requireID())-\(UUID().uuidString).jpg"
+                    let path = try self.path(req, forImageNamed: name)
+                    
+                    FileManager().createFile(atPath: path,
+                                             contents: imageData.picture,
+                                             attributes: nil)
+                    
+                    return Future.map(on: req) { ImageUploadResponse(fileName: name) }
+            }
         }
     }
     
