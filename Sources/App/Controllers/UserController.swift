@@ -19,6 +19,8 @@ class UserController: RouteCollection {
         authSessionRouter.post(LoginRequest.self, at: "api", "login", use: self.login)
         
         router.get("api", "logout", use: logout)
+        
+        router.post(RefreshTokenRequest.self, at: "api", "refresh-token", use: self.refreshToken)
     }
     
     // MARK: Request Handlers
@@ -60,6 +62,14 @@ class UserController: RouteCollection {
                 LoginResponse(token: $0, user: publicUser)
             })
         }
+    }
+    
+    func refreshToken(_ req: Request, _ refreshTokenRequest: RefreshTokenRequest) throws -> Future<AccessTokenResponse> {
+        try req.validate(refreshTokenRequest)
+        
+        let authService = try req.make(AuthService.self)
+        
+        return try authService.refreshAccessToken(refreshToken: refreshTokenRequest.refreshToken, on: req)
     }
     
     func logout(_ req: Request) throws -> Future<HTTPStatus> {
