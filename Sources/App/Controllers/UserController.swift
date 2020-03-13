@@ -14,12 +14,10 @@ class UserController: RouteCollection {
     func boot(router: Router) throws {
         
         router.post(RegisterUserRequest.self, at: "api", "register", use: self.register)
-        
         router.post(LoginRequest.self, at: "api", "login", use: self.login)
         router.post(RefreshTokenRequest.self, at: "api", "refresh-token", use: self.refreshToken)
         
         router.get("api", "logout", use: logout)
-        
     }
     
     // MARK: Request Handlers
@@ -72,6 +70,7 @@ class UserController: RouteCollection {
     }
     
     func logout(_ req: Request) throws -> Future<HTTPStatus> {
+        // MARK: TODO - add invalidating access tokens
         return req.future(.noContent)
     }
 }
