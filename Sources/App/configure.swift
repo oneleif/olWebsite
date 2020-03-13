@@ -7,8 +7,10 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
     // Register providers first
     try services.register(FluentPostgreSQLProvider())
     try services.register(AuthenticationProvider())
+        
     /// Create default content config
     var contentConfig = ContentConfig.default()
+
     /// Create custom JSON encoder
     let jsonEncoder = JSONEncoder()
     let formatter = DateFormatter()
@@ -22,6 +24,7 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
     contentConfig.use(encoder: jsonEncoder, for: .json)
     
     services.register(contentConfig)
+    
     // Register routes to the router
     let router = EngineRouter.default()
     try routes(router)
@@ -80,4 +83,6 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
     // Configure model services
     let userService = UserService()
     services.register(userService)
+    
+    services.register(AuthService())
 }
