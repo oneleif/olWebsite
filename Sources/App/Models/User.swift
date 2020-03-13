@@ -58,3 +58,9 @@ extension User: Parameter {
         return parameter
     }
 }
+
+extension User {
+    var refreshTokens: Children<User, RefreshToken> {
+        return self.children(\.userId)
+    }
+}

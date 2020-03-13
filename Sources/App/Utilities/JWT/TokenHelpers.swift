@@ -61,4 +61,10 @@ class TokenHelpers {
             throw JWTError.verificationFailed
         }
     }
+    
+    /// Generate new Refresh Token
+    class func createRefreshToken() -> String {
+        let letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+        return String((0 ... 40).map { _ in letters.randomElement()! })
+    }
 }
