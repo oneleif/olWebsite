@@ -12,14 +12,17 @@ struct AccessTokenPayload: JWTPayload {
     var issuedAt: IssuedAtClaim
     var expirationAt: ExpirationClaim
     var userId: User.ID
+    var value: String
     
     init(issuedAt: Date = Date(),
          expirationAt: Date = Date().addingTimeInterval(JWTConfig.expirationTime),
-         userId: User.ID) {
+         userId: User.ID,
+         value: String) {
         self.issuer = JWTConfig.issuer
         self.issuedAt = IssuedAtClaim(value: issuedAt)
         self.expirationAt = ExpirationClaim(value: expirationAt)
         self.userId = userId
+        self.value = value
     }
     
     func verify(using signer: JWTSigner) throws {

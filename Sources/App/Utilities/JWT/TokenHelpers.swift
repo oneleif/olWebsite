@@ -13,7 +13,9 @@ class TokenHelpers {
         guard let id = user.id else {
             throw JWTError.payloadCreation
         }
-        return AccessTokenPayload(userId: id)
+        
+        let value = UUID().uuidString
+        return AccessTokenPayload(userId: id, value: value)
     }
     
     /// Create Access Token for user
@@ -49,11 +51,17 @@ class TokenHelpers {
     
     /// Get user ID from token
     class func getUserId(fromPayloadOf token: String) throws -> Int {
+        return try self.getAccessTokenPayload(of: token).userId
+    }
+    
+    class func getAccessTokenValue(fromPayloadOf token: String) throws -> String {
+        return try self.getAccessTokenPayload(of: token).value
+    }
+    
+    private class func getAccessTokenPayload(of token: String) throws -> AccessTokenPayload {
         do {
             let receivedJWT = try JWT<AccessTokenPayload>(from: token, verifiedUsing: JWTConfig.signer)
-            let payload = receivedJWT.payload
-            
-            return payload.userId
+            return receivedJWT.payload
         } catch {
             throw JWTError.verificationFailed
         }
