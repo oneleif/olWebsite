@@ -40,7 +40,7 @@ commands:
 jobs:
   test:
     docker:
-      - image: swift:4.1
+      - image: swift:5.1
       - image: circleci/postgres:latest
         environment:
           POSTGRES_USER: oneleif
@@ -58,7 +58,7 @@ jobs:
 
   test-release:
     docker:
-      - image: swift:4.1
+      - image: swift:5.1
     steps:
       - checkout
       - run:
