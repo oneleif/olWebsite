@@ -10,13 +10,10 @@ import JWT
 class TokenHelpers {
     /// Create payload for Access Token
     fileprivate class func createPayload(from user: User) throws -> AccessTokenPayload {
-        if let id = user.id {
-            let payload = AccessTokenPayload(userId: id)
-           
-            return payload
-        } else {
+        guard let id = user.id else {
             throw JWTError.payloadCreation
         }
+        return AccessTokenPayload(userId: id)
     }
     
     /// Create Access Token for user
@@ -27,11 +24,11 @@ class TokenHelpers {
         let jwt = JWT<AccessTokenPayload>(header: header, payload: payload)
         let tokenData = try signer.sign(jwt)
         
-        if let token = String(data: tokenData, encoding: .utf8) {
-            return token
-        } else {
+        guard let token = String(data: tokenData, encoding: .utf8) else {
             throw JWTError.createJWT
         }
+        
+        return token
     }
     
     /// Get expiration date of token

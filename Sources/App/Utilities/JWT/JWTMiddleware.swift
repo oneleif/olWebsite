@@ -12,15 +12,15 @@ class JWTMiddleware: Middleware {
     
     func respond(to request: Request, chainingTo next: Responder) throws -> EventLoopFuture<Response> {
         let token = request.token
-        if !token.isEmpty {
-            do {
-                try TokenHelpers.verifyToken(token)
-                return try next.respond(to: request)
-            } catch let error as JWTError {
-                throw Abort(.unauthorized, reason: error.reason)
-            }
-        } else {
+        guard !token.isEmpty else {
             throw Abort(.unauthorized, reason: "No Access Token")
+        }
+        
+        do {
+            try TokenHelpers.verifyToken(token)
+            return try next.respond(to: request)
+        } catch let error as JWTError {
+            throw Abort(.unauthorized, reason: error.reason)
         }
     }
 }
