@@ -10,7 +10,7 @@ import JWT
 
 extension Request {
     var token: String {
-        return self.http.headers[.authorization].first?.replacingOccurrences(of: "Bearer ", with: "") ?? ""
+        return self.http.headers.bearerAuthorization?.token ?? ""
     }
     
     func authorizedUser() throws -> Future<User> {
