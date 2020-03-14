@@ -41,9 +41,9 @@ class TokenHelpers {
     }
     
     /// Verify token is valid or not
-    class func verifyToken(_ token: String) throws {
+    class func verifyToken(_ token: String) throws -> AccessTokenPayload {
         do {
-            let _ = try JWT<AccessTokenPayload>(from: token, verifiedUsing: JWTConfig.signer)
+            return try JWT<AccessTokenPayload>(from: token, verifiedUsing: JWTConfig.signer).payload
         } catch {
             throw JWTError.verificationFailed
         }

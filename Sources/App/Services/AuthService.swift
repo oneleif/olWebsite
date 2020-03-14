@@ -45,4 +45,10 @@ class AuthService: Service {
             }
         }
     }
+    
+    func findAccessToken(value: String, on request: Request) throws -> Future<AccessToken?> {
+        return AccessToken.query(on: request)
+            .filter(\.value == value)
+            .first()
+    }
 }

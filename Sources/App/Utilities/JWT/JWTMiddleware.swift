@@ -17,8 +17,12 @@ class JWTMiddleware: Middleware {
         }
         
         do {
-            try TokenHelpers.verifyToken(token)
-            return try next.respond(to: request)
+            let payload = try TokenHelpers.verifyToken(token)
+            let authService = try request.make(AuthService.self)
+            
+            return try authService.findAccessToken(value: payload.value, on: request)
+                .unwrap(or: Abort(.unauthorized))
+                .transform(to: try next.respond(to: request))
         } catch let error as JWTError {
             throw Abort(.unauthorized, reason: error.reason)
         }
