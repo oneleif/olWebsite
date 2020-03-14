@@ -93,8 +93,8 @@ final class LoginTests: XCTestCase {
         let _ = try self.tryLoginUser(request: loginRequest, decodeTo: LoginResponse.self)
         
         let accessTokensCount = try AccessToken.query(on: self.connection)
-        .count()
-        .wait()
+            .count()
+            .wait()
         
         XCTAssertEqual(accessTokensCount, 1)
     }
@@ -105,8 +105,8 @@ final class LoginTests: XCTestCase {
         let _ = try self.tryLoginUser(request: loginRequest, decodeTo: LoginResponse.self)
         
         let refrehsTokensCount = try RefreshToken.query(on: self.connection)
-        .count()
-        .wait()
+            .count()
+            .wait()
         
         XCTAssertEqual(refrehsTokensCount, 1)
     }
