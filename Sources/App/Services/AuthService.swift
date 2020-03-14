@@ -35,8 +35,17 @@ class AuthService: Service {
                     .flatMap { user in
                         return try self.createAccessToken(for: user, on: request)
                 }.then { accessToken in
-                    return refreshTokenModel.delete(on: request)
+                    do {
+                        return try refreshTokenModel.accessTokens.query(on: request)
+                            .delete()
+                            .then { _ in
+                                return refreshTokenModel.delete(on: request)
+                        }
                         .transform(to: accessToken)
+                    } catch {
+                        return request.future(error: error)
+                    }
+                    
                 }
             } else {
                 return refreshTokenModel.delete(on: request).thenThrowing {
