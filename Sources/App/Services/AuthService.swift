@@ -31,7 +31,6 @@ class AuthService: Service {
         }
     }
     
-    
     /// Refreshes access token by creating new pair of access and refresh token for the same user.
     ///
     /// If provided refresh token is already expired, it throws Unauthorized error.
@@ -74,7 +73,6 @@ class AuthService: Service {
         }
     }
     
-    
     /// Returns AccessToken model from database which has the same value as provided in parameter
     /// - Parameters:
     ///   - value: value to find
@@ -84,7 +82,6 @@ class AuthService: Service {
             .filter(\.value == value)
             .first()
     }
-    
     
     /// Removes access token and associated refresh token from database.
     ///
