@@ -6,9 +6,9 @@ class AuthService: Service {
     func createAccessToken(for user: User, on database: DatabaseConnectable) throws -> Future<AccessTokenResponse> {
         let accessToken = try TokenHelpers.createAccessToken(from: user)
         let accessTokenValue = try TokenHelpers.getAccessTokenValue(fromPayloadOf: accessToken)
-        let expiredAt = try TokenHelpers.expiredDate(of: accessToken)
+        let expiresAt = try TokenHelpers.expiredDate(of: accessToken)
         let refreshToken = TokenHelpers.createRefreshToken()
-        let accessTokenResponse = AccessTokenResponse(accessToken: accessToken, refreshToken: refreshToken, expiredAt: expiredAt)
+        let accessTokenResponse = AccessTokenResponse(accessToken: accessToken, refreshToken: refreshToken, expiresAt: expiresAt)
         
         return database.transaction(on: .psql) { (database) -> EventLoopFuture<AccessTokenResponse> in
             return RefreshToken(token: refreshToken, userId: try user.requireID())
@@ -18,7 +18,7 @@ class AuthService: Service {
                         value: accessTokenValue,
                         refreshTokenId: try refreshTokenModel.requireID(),
                         userId: try user.requireID(),
-                        expiresAt: expiredAt).save(on: database)
+                        expiresAt: expiresAt).save(on: database)
             }.transform(to: accessTokenResponse)
         }
     }
@@ -30,7 +30,7 @@ class AuthService: Service {
             .unwrap(or: Abort(.unauthorized))
         
         return refreshTokenModel.flatMap { refreshTokenModel in
-            if refreshTokenModel.expiredAt > Date() {
+            if refreshTokenModel.expiresAt > Date() {
                 return refreshTokenModel.user.get(on: request)
                     .flatMap { user in
                         return try self.createAccessToken(for: user, on: request)

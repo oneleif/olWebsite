@@ -11,20 +11,20 @@ final class RefreshToken: PostgreSQLModel {
     
     var userId: Int
     var token: String
-    var expiredAt: Date
+    var expiresAt: Date
     
     init(id: Int? = nil,
          token: String,
-         expiredAt: Date = Date().addingTimeInterval(Constants.refreshTokenTime),
+         expiresAt: Date = Date().addingTimeInterval(Constants.refreshTokenTime),
          userId: User.ID) {
         self.id = id
         self.token = token
-        self.expiredAt = expiredAt
+        self.expiresAt = expiresAt
         self.userId = userId
     }
     
     func updateExpiredDate() {
-        self.expiredAt = Date().addingTimeInterval(Constants.refreshTokenTime)
+        self.expiresAt = Date().addingTimeInterval(Constants.refreshTokenTime)
     }
 }
 
