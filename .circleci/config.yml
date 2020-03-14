@@ -36,6 +36,17 @@ commands:
           bundle-bucket: $CODE_DEPLOY_BUNDLE_BUCKET
           bundle-key: << parameters.environment >>/$CIRCLE_SHA1
           deployment-group: << parameters.environment >>
+  install-swift-dependencies:
+    steps:
+      - run:
+          name: Install SSL libraries
+          command: |
+            apt-get -qq update && apt-get install -y \
+            libssl-dev zlib1g-dev \
+            && rm -r /var/lib/apt/lists/*
+      - run:
+          name: Copy library filters
+          command: mkdir -p /build/lib && cp -R /usr/lib/swift/linux/*.so* /build/lib
 
 jobs:
   test:
@@ -48,6 +59,7 @@ jobs:
           POSTGRES_DB: oneleif-testing
           POSTGRES_INITDB_ARGS: --auth-local password --auth-host password
     steps:
+      - install-swift-dependencies
       - checkout
       - run:
           name: Compile code
@@ -60,6 +72,7 @@ jobs:
     docker:
       - image: swift:5.1
     steps:
+      - install-swift-dependencies
       - checkout
       - run:
           name: Compile code with optimizations
