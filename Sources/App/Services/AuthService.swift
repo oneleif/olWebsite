@@ -5,13 +5,22 @@ import JWT
 class AuthService: Service {
     func createAccessToken(for user: User, on database: DatabaseConnectable) throws -> Future<AccessTokenResponse> {
         let accessToken = try TokenHelpers.createAccessToken(from: user)
+        let accessTokenValue = try TokenHelpers.getAccessTokenValue(fromPayloadOf: accessToken)
         let expiredAt = try TokenHelpers.expiredDate(of: accessToken)
         let refreshToken = TokenHelpers.createRefreshToken()
         let accessTokenResponse = AccessTokenResponse(accessToken: accessToken, refreshToken: refreshToken, expiredAt: expiredAt)
         
-        return RefreshToken(token: refreshToken, userId: try user.requireID())
-            .save(on: database)
-            .transform(to: accessTokenResponse)
+        return database.transaction(on: .psql) { (database) -> EventLoopFuture<AccessTokenResponse> in
+            return RefreshToken(token: refreshToken, userId: try user.requireID())
+                .save(on: database)
+                .flatMap { refreshTokenModel in
+                    return AccessToken(
+                        value: accessTokenValue,
+                        refreshTokenId: try refreshTokenModel.requireID(),
+                        userId: try user.requireID(),
+                        expiresAt: expiredAt).save(on: database)
+            }.transform(to: accessTokenResponse)
+        }
     }
     
     func refreshAccessToken(refreshToken: String, on request: Request) throws -> Future<AccessTokenResponse> {
