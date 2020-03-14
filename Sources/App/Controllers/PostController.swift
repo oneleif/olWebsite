@@ -44,9 +44,7 @@ class PostController: RouteCollection {
     }
     
     func postsHandler(_ req: Request) throws -> Future<[PostItem]> {
-        try req.authorizedUser().flatMap { _ in
-            return PostItem.query(on: req).all()
-        }
+        return PostItem.query(on: req).all()
     }
     
     
