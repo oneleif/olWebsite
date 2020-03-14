@@ -13,8 +13,9 @@ import FluentPostgreSQL
 final class LoginTests: XCTestCase {
     let loginUri = "/api/login"
     
-    var app: Application!
-    var connection: PostgreSQLConnection!
+    static var app: Application!
+    static var connection: PostgreSQLConnection!
+    static var userService: UserService!
     
     let userEmail = "test@test.com"
     let userPassword = "Password#1"
@@ -23,17 +24,22 @@ final class LoginTests: XCTestCase {
     
     var user: User?
     
-    public override func setUp() {
+    public override class func setUp() {
         try! Application.resetDatabase()
         self.app = try! Application.testable()
-        self.connection = try! app.newConnection(to: .psql).wait()
         
-        let userService = try! app.make(UserService.self)
-        let registerUser = RegisterUserRequest(email: self.userEmail, password: self.userPassword)
-        self.user = try! userService.createUser(registerRequest: registerUser, on: connection).wait()
+        self.connection = try! app.newConnection(to: .psql).wait()
+        self.userService = try! app.make(UserService.self)
     }
     
-    public override func tearDown() {
+    public override func setUp() {
+        self.clearDatabase()
+        
+        let registerUser = RegisterUserRequest(email: self.userEmail, password: self.userPassword)
+        self.user = try! LoginTests.userService.createUser(registerRequest: registerUser, on: LoginTests.connection).wait()
+    }
+    
+    public override class func tearDown() {
         self.connection.close()
         try? self.app.syncShutdownGracefully()
     }
@@ -92,7 +98,7 @@ final class LoginTests: XCTestCase {
         
         let _ = try self.tryLoginUser(request: loginRequest, decodeTo: LoginResponse.self)
         
-        let accessTokensCount = try AccessToken.query(on: self.connection)
+        let accessTokensCount = try AccessToken.query(on: LoginTests.connection)
             .count()
             .wait()
         
@@ -104,15 +110,15 @@ final class LoginTests: XCTestCase {
         
         let _ = try self.tryLoginUser(request: loginRequest, decodeTo: LoginResponse.self)
         
-        let refrehsTokensCount = try RefreshToken.query(on: self.connection)
+        let refrehsTokensCount = try RefreshToken.query(on: LoginTests.connection)
             .count()
             .wait()
         
         XCTAssertEqual(refrehsTokensCount, 1)
     }
-        
+    
     private func tryLoginUser<T: Content>(request: LoginRequest, decodeTo decodeType: T.Type) throws -> (T, HTTPResponseStatus)  {
-        let response = try self.app.sendRequest(
+        let response = try LoginTests.app.sendRequest(
             to: self.loginUri,
             method: .POST,
             headers: ["Content-Type": "application/json"],
@@ -124,7 +130,13 @@ final class LoginTests: XCTestCase {
         
         return (decoded, status)
     }
-
+    
+    private func clearDatabase() {
+        try! LoginTests.connection.delete(from: User.self).run().wait()
+        try! LoginTests.connection.delete(from: RefreshToken.self).run().wait()
+        try! LoginTests.connection.delete(from: AccessToken.self).run().wait()
+    }
+    
     public static let allTests = [
         ("testSuccessfulLogin", testSuccessfulLogin),
         ("testShouldReturnAccessToken", testShouldReturnAccessToken),

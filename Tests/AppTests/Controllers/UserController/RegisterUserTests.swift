@@ -6,18 +6,23 @@ import FluentPostgreSQL
 final class RegisterUserTests: XCTestCase {
     let registerUri = "/api/register"
     
-    var app: Application!
-    var connection: PostgreSQLConnection!
+    static var app: Application!
+    static var connection: PostgreSQLConnection!
     
-    public override func setUp() {
+    public override class func setUp() {
         try! Application.resetDatabase()
         self.app = try! Application.testable()
+        
         self.connection = try! app.newConnection(to: .psql).wait()
     }
     
-    public override func tearDown() {
+    public override class func tearDown() {
         self.connection.close()
         try? self.app.syncShutdownGracefully()
+    }
+    
+    public override func setUp() {
+        self.clearDatabase()
     }
     
     func testUserCanRegister() throws {
@@ -36,7 +41,7 @@ final class RegisterUserTests: XCTestCase {
         XCTAssertNotNil(registeredUser.id)
         XCTAssertNotNil(registeredUser.social)
         
-        let dbUser = try User.find(registeredUser.id!, on: self.connection).wait()
+        let dbUser = try User.find(registeredUser.id!, on: RegisterUserTests.connection).wait()
         XCTAssertNotNil(dbUser)
     }
     
@@ -141,7 +146,7 @@ final class RegisterUserTests: XCTestCase {
     }
     
     private func tryRegisterUser<T: Content>(request: RegisterUserRequest, decodeTo decodeType: T.Type) throws -> (T, HTTPResponseStatus)  {
-        let response = try self.app.sendRequest(
+        let response = try RegisterUserTests.app.sendRequest(
             to: self.registerUri,
             method: .POST,
             headers: ["Content-Type": "application/json"],
@@ -153,7 +158,11 @@ final class RegisterUserTests: XCTestCase {
         
         return (decoded, status)
     }
-
+    
+    private func clearDatabase() {
+        try! RegisterUserTests.connection.delete(from: User.self).run().wait()
+    }
+    
     public static let allTests = [
         ("testEmailTakenValidation", testEmailTakenValidation),
         ("testPasswordMissingSpecialCharacterValidation", testPasswordMissingSpecialCharacterValidation),
