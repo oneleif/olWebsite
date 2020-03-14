@@ -32,6 +32,10 @@ extension RefreshToken {
     var user: Parent<RefreshToken, User> {
         return self.parent(\.userId)
     }
+    
+    var accessTokens: Children<RefreshToken, AccessToken> {
+        return self.children(\.refreshTokenId)
+    }
 }
 
 extension RefreshToken: Migration { }
