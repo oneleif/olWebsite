@@ -60,4 +60,19 @@ class AuthService: Service {
             .filter(\.value == value)
             .first()
     }
+    
+    func invalidateToken(_ token: String, on request: Request) throws -> Future<Void> {
+        let accessToken = try TokenHelpers.verifyToken(token)
+        
+        return try self.findAccessToken(value: accessToken.value, on: request)
+            .unwrap(or: Abort(.unauthorized))
+            .flatMap { accessTokenModel in
+                return accessTokenModel.refreshToken
+                    .get(on: request)
+                    .delete(on: request)
+                    .transform(to: accessTokenModel)
+        }.flatMap { accessTokenModel in
+            return accessTokenModel.delete(on: request)
+        }
+    }
 }

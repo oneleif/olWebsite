@@ -70,7 +70,9 @@ class UserController: RouteCollection {
     }
     
     func logout(_ req: Request) throws -> Future<HTTPStatus> {
-        // MARK: TODO - add invalidating access tokens
-        return req.future(.noContent)
+        let authService = try req.make(AuthService.self)
+        
+        return try authService.invalidateToken(req.token, on: req)
+            .transform(to: .noContent)
     }
 }
