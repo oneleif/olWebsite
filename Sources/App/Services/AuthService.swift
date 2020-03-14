@@ -10,15 +10,15 @@ class AuthService: Service {
     ///
     /// - Parameters:
     ///   - user: instance of user model that is logging in
-    ///   - request: request instance
-    func createAccessToken(for user: User, on request: Request) throws -> Future<AccessTokenResponse> {
+    ///   - connection: instance able to connect to the database
+    func createAccessToken(for user: User, on connection: DatabaseConnectable) throws -> Future<AccessTokenResponse> {
         let accessToken = try TokenHelpers.createAccessToken(from: user)
         let accessTokenValue = try TokenHelpers.getAccessTokenValue(fromPayloadOf: accessToken)
         let expiresAt = try TokenHelpers.expiredDate(of: accessToken)
         let refreshToken = TokenHelpers.createRefreshToken()
         let accessTokenResponse = AccessTokenResponse(accessToken: accessToken, refreshToken: refreshToken, expiresAt: expiresAt)
         
-        return request.transaction(on: .psql) { (database) -> EventLoopFuture<AccessTokenResponse> in
+        return connection.transaction(on: .psql) { (database) -> EventLoopFuture<AccessTokenResponse> in
             return RefreshToken(token: refreshToken, userId: try user.requireID())
                 .save(on: database)
                 .flatMap { refreshTokenModel in
@@ -41,33 +41,33 @@ class AuthService: Service {
     ///
     /// - Parameters:
     ///   - refreshToken: refresh token assigned to access token which has to be refreshed
-    ///   - request: request instance
-    func refreshAccessToken(refreshToken: String, on request: Request) throws -> Future<AccessTokenResponse> {
-        let refreshTokenModel = RefreshToken.query(on: request)
+    ///   - connection: instance able to connect to the database
+    func refreshAccessToken(refreshToken: String, on connection: DatabaseConnectable) throws -> Future<AccessTokenResponse> {
+        let refreshTokenModel = RefreshToken.query(on: connection)
             .filter(\.token == refreshToken)
             .first()
             .unwrap(or: Abort(.unauthorized))
         
         return refreshTokenModel.flatMap { refreshTokenModel in
             if refreshTokenModel.expiresAt > Date() {
-                return refreshTokenModel.user.get(on: request)
+                return refreshTokenModel.user.get(on: connection)
                     .flatMap { user in
-                        return try self.createAccessToken(for: user, on: request)
+                        return try self.createAccessToken(for: user, on: connection)
                 }.then { accessToken in
                     do {
-                        return try refreshTokenModel.accessTokens.query(on: request)
+                        return try refreshTokenModel.accessTokens.query(on: connection)
                             .delete()
                             .then { _ in
-                                return refreshTokenModel.delete(on: request)
+                                return refreshTokenModel.delete(on: connection)
                         }
                         .transform(to: accessToken)
                     } catch {
-                        return request.future(error: error)
+                        return connection.future(error: error)
                     }
                     
                 }
             } else {
-                return refreshTokenModel.delete(on: request).thenThrowing {
+                return refreshTokenModel.delete(on: connection).thenThrowing {
                     throw Abort(.unauthorized)
                 }
             }
@@ -78,9 +78,9 @@ class AuthService: Service {
     /// Returns AccessToken model from database which has the same value as provided in parameter
     /// - Parameters:
     ///   - value: value to find
-    ///   - request: request instance
-    func findAccessToken(value: String, on request: Request) throws -> Future<AccessToken?> {
-        return AccessToken.query(on: request)
+    ///   - connection: instance able to connect to the database
+    func findAccessToken(value: String, on connection: DatabaseConnectable) throws -> Future<AccessToken?> {
+        return AccessToken.query(on: connection)
             .filter(\.value == value)
             .first()
     }
@@ -93,19 +93,19 @@ class AuthService: Service {
     ///
     /// - Parameters:
     ///   - token: Bearer token sent by client
-    ///   - request: request instance
-    func invalidateToken(_ token: String, on request: Request) throws -> Future<Void> {
+    ///   - connection: instance able to connect to the database
+    func invalidateToken(_ token: String, on connection: DatabaseConnectable) throws -> Future<Void> {
         let accessToken = try TokenHelpers.verifyToken(token)
         
-        return try self.findAccessToken(value: accessToken.value, on: request)
+        return try self.findAccessToken(value: accessToken.value, on: connection)
             .unwrap(or: Abort(.unauthorized))
             .flatMap { accessTokenModel in
                 return accessTokenModel.refreshToken
-                    .get(on: request)
-                    .delete(on: request)
+                    .get(on: connection)
+                    .delete(on: connection)
                     .transform(to: accessTokenModel)
         }.flatMap { accessTokenModel in
-            return accessTokenModel.delete(on: request)
+            return accessTokenModel.delete(on: connection)
         }
     }
 }
