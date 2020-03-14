@@ -20,7 +20,6 @@ final class LogoutTests: XCTestCase {
     let userPassword = "Password#1"
     
     var accessToken: String?
-    var refreshToken: String?
     
     let invalidAccessToken = UUID().uuidString
     
@@ -37,7 +36,6 @@ final class LogoutTests: XCTestCase {
         let tokenResponse = try! authService.createAccessToken(for: user, on: self.connection).wait()
         
         self.accessToken = tokenResponse.accessToken
-        self.refreshToken = tokenResponse.refreshToken
     }
     
     public override func tearDown() {
