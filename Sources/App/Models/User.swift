@@ -49,12 +49,18 @@ extension User: PasswordAuthenticatable {
         return \User.password
     }
 }
-extension User: SessionAuthenticatable {}
+
 extension User: Parameter {
     typealias ResolvedParameter = String
     
     static func resolveParameter(_ parameter: String,
                                  on container: Container) throws -> ImageUpload.ResolvedParameter {
         return parameter
+    }
+}
+
+extension User {
+    var refreshTokens: Children<User, RefreshToken> {
+        return self.children(\.userId)
     }
 }

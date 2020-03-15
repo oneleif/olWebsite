@@ -16,7 +16,7 @@ struct BadPost: Error {
 
 class PostController: RouteCollection {
     func boot(router: Router) throws {
-        let authSessionRouter = router.grouped(User.authSessionsMiddleware())
+        let authSessionRouter = router.grouped(JWTMiddleware())
         
         authSessionRouter.get("api", "post", PostItem.parameter, use: postHandler)
         authSessionRouter.get("api", "posts", use: postsHandler)
@@ -44,14 +44,11 @@ class PostController: RouteCollection {
     }
     
     func postsHandler(_ req: Request) throws -> Future<[PostItem]> {
-        _ = try req.requireAuthenticated(User.self)
-        
         return PostItem.query(on: req).all()
     }
     
     
     func postHandler(_ req: Request) throws -> Future<PostItem> {
-        _ = try req.requireAuthenticated(User.self)
         let postId = Int(try req.parameters.next(Int.self))
         
         return PostItem.query(on: req)
@@ -67,32 +64,32 @@ class PostController: RouteCollection {
         }
     }
     
-    func updatePost(_ req: Request) throws -> Future<(PostItem)> {
-        let user = try req.requireAuthenticated(User.self)
+    func updatePost(_ req: Request) throws -> Future<PostItem> {
         let postId = Int(try req.parameters.next(Int.self))
         
-        return try req.content.decode(PostItem.self)
-            .flatMap { updatedPostItem in
-                if updatedPostItem.author != user.id {
-                    return req.future(error: BadPost())
-                }
-                return PostItem.query(on: req)
-                    .filter(\PostItem.id == postId)
-                    .first()
-                    .flatMap { postItem in
-                        guard let item = postItem else {
-                            return req.future(error: BadPost())
-                        }
-                        
-                        updatedPostItem.id = item.id
-                        
-                        return updatedPostItem.update(on: req)
-                }
+        return try req.authorizedUser().flatMap(to: PostItem.self) { user in
+            return try req.content.decode(PostItem.self)
+                .flatMap { updatedPostItem in
+                    if updatedPostItem.author != user.id {
+                        return req.future(error: BadPost())
+                    }
+                    return PostItem.query(on: req)
+                        .filter(\PostItem.id == postId)
+                        .first()
+                        .flatMap { postItem in
+                            guard let item = postItem else {
+                                return req.future(error: BadPost())
+                            }
+                            
+                            updatedPostItem.id = item.id
+                            
+                            return updatedPostItem.update(on: req)
+                    }
+            }
         }
     }
     
     func deletePostHandler(_ req: Request) throws -> Future<HTTPStatus> {
-        _ = try req.requireAuthenticated(User.self)
         let postId = Int(try req.parameters.next(Int.self))
         
         return PostItem.query(on: req)

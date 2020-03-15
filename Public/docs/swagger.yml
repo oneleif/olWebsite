@@ -13,7 +13,9 @@ info:
     altText: oneleif logo
 
 servers:
-  - url: http://ec2-18-222-87-195.us-east-2.compute.amazonaws.com/api
+  - url: https://dev.api.oneleif.com/api
+    description: Staging server
+  - url: https://api.oneleif.com/api
     description: Main (production) server
 
 paths:
@@ -21,7 +23,7 @@ paths:
   /register:
     post:
       tags:
-        - user
+        - User
       summary: Register user
       description: Registers new user in the system
       operationId: register
@@ -39,7 +41,7 @@ paths:
   /login:
     post:
       tags:
-        - user
+        - Authorization
       summary: Login user
       description: Authenticates the user and creates new session
       operationId: login
@@ -47,19 +49,37 @@ paths:
         $ref: "#/components/requestBodies/LoginRequestBody"
       responses:
         "200":
-          description: User successfully authenticated
+          $ref: "#/components/responses/LoginSuccessful"
         "401":
           $ref: "#/components/responses/401Unauthorized"
+        default:
+          $ref: "#/components/responses/GenericError"
+  /refresh-token:
+    post:
+      tags:
+        - Authorization
+      summary: Refreshes token
+      description: Authenticates the user and creates new session
+      operationId: refreshToken
+      requestBody:
+        $ref: "#/components/requestBodies/RefreshTokenRequestBody"
+      responses:
+        "200":
+          $ref: "#/components/responses/RefreshTokenSuccessful"
+        "401":
+          $ref: "#/components/responses/401Unauthorized"
+        "400":
+          $ref: "#/components/responses/400BadRequest"
         default:
           $ref: "#/components/responses/GenericError"
   /logout:
     get:
       security:
-        - cookieAuth: []
+        - bearerAuth: []
       tags:
-        - user
+        - Authorization
       summary: Logout user
-      description: Ends user session
+      description: Ends user session by invalidating tokens (provided access token and associated refresh token)
       operationId: logout
       responses:
         "204":
@@ -118,6 +138,17 @@ components:
         location:
           type: string
 
+    AccessToken:
+      type: object
+      properties:
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+        expiresAt:
+          type: string
+          format: date-time
+
     Error:
       type: object
       properties:
@@ -125,6 +156,14 @@ components:
           type: boolean
         reason:
           type: string
+
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          $ref: "#/components/schemas/AccessToken"
+        user:
+          $ref: "#/components/schemas/User"
 
   requestBodies:
     RegisterUserRequestBody:
@@ -151,7 +190,29 @@ components:
               password:
                 type: string
 
+    RefreshTokenRequestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              refreshToken:
+                type: string
+
   responses:
+    LoginSuccessful:
+      description: User successfully logged in
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/LoginResponse"
+    RefreshTokenSuccessful:
+      description: Token successfully refreshed
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/AccessToken"
     400BadRequest:
       description: Validation error
       content:
@@ -172,7 +233,7 @@ components:
             $ref: "#/components/schemas/Error"
 
   securitySchemes:
-    cookieAuth:
-      type: apiKey
-      in: cookie
-      name: session
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: Bearer

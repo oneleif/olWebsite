@@ -7,6 +7,28 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
     // Register providers first
     try services.register(FluentPostgreSQLProvider())
     try services.register(AuthenticationProvider())
+        
+    /// Create default content config
+    var contentConfig = ContentConfig.default()
+
+    /// Create custom JSON encoder
+    let jsonEncoder = JSONEncoder()
+    let jsonDecoder = JSONDecoder()
+    
+    let formatter = DateFormatter()
+    formatter.calendar = Calendar(identifier: .iso8601)
+    formatter.locale = Locale(identifier: "en_US_POSIX")
+    formatter.timeZone = TimeZone(secondsFromGMT: 0)
+    formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSXXXXX"
+    
+    jsonEncoder.dateEncodingStrategy = .formatted(formatter)
+    jsonDecoder.dateDecodingStrategy = .formatted(formatter)
+
+    /// Register JSON encoder and content config
+    contentConfig.use(encoder: jsonEncoder, for: .json)
+    contentConfig.use(decoder: jsonDecoder, for: .json)
+    
+    services.register(contentConfig)
     
     // Register routes to the router
     let router = EngineRouter.default()
@@ -56,6 +78,8 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
     var migrations = MigrationConfig()
     migrations.add(model: User.self, database: .psql)
     migrations.add(model: PostItem.self, database: .psql)
+    migrations.add(model: AccessToken.self, database: .psql)
+    migrations.add(model: RefreshToken.self, database: .psql)
     services.register(migrations)
     
     // Configure validations
@@ -66,4 +90,6 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
     // Configure model services
     let userService = UserService()
     services.register(userService)
+    
+    services.register(AuthService())
 }

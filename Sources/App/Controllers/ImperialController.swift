@@ -16,35 +16,37 @@ struct ImperialController: RouteCollection {
 //    try router.oAuth(from: GitHub.self, authenticate: "login-github", callback: githubCallbackURL, completion: processGitHubLogin)
   }
 
+// MARK: TODO - fix authenticating user
   func processGoogleLogin(request: Request, token: String) throws -> Future<ResponseEncodable> {
     return try Google.getUser(on: request).flatMap(to: ResponseEncodable.self) { userInfo in
       return User.query(on: request).filter(\.email == userInfo.email)
                  .first().flatMap(to: ResponseEncodable.self) { foundUser in
-        guard let existingUser = foundUser else {
+        guard let _ = foundUser else {
           let user = User(email: userInfo.email, password: UUID().uuidString)
           return user.save(on: request).map(to: ResponseEncodable.self) { user in
-            try request.authenticateSession(user)
+//            try request.authenticateSession(user)
             return request.redirect(to: "/")
           }
         }
-        try request.authenticateSession(existingUser)
+//        try request.authenticateSession(existingUser)
         return request.future(request.redirect(to: "/"))
       }
     }
   }
 
+    // MARK: TODO - fix authenticating user
   func processGitHubLogin(request: Request, token: String) throws -> Future<ResponseEncodable> {
     return try GitHub.getUser(on: request).flatMap(to: ResponseEncodable.self) { userInfo in
       return User.query(on: request).filter(\.email == userInfo.login)
                  .first().flatMap(to: ResponseEncodable.self) { foundUser in
-        guard let existingUser = foundUser else {
+        guard let _ = foundUser else {
           let user = User(email: userInfo.login, password: UUID().uuidString)
           return user.save(on: request).map(to: ResponseEncodable.self) { user in
-            try request.authenticateSession(user)
+//            try request.authenticateSession(user)
             return request.redirect(to: "/")
           }
         }
-        try request.authenticateSession(existingUser)
+//        try request.authenticateSession(existingUser)
         return request.future(request.redirect(to: "/"))
       }
     }
