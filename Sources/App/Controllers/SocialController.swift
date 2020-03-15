@@ -28,7 +28,7 @@ class SocialController: RouteCollection {
     ///
     /// - Returns: `SocialInformation` of `User`
     func socialHandler(_ req: Request) throws -> Future<SocialInformation> {
-        try req.authorizedUser().map { user in
+        return try req.authorizedUser().map { user in
             return user.social ?? SocialInformation(
                 id: user.id,
                 username: "",
@@ -55,9 +55,9 @@ class SocialController: RouteCollection {
     ///
     /// - Returns: `SocialInformation` of `User`
     func updateSocialHandler(_ req: Request) throws -> Future<SocialInformation> {
-        try req.authorizedUser().flatMap { user in
+        return try req.authorizedUser().flatMap { user in
             return try req.content.decode(SocialInformation.self)
-                .flatMap { social in
+                .flatMap { (social) -> Future<SocialInformation> in
                     return User.query(on: req)
                         .filter(\User.id == social.id)
                         .first()
