@@ -20,10 +20,10 @@ struct ImageController: RouteCollection {
     }
     
     func uploadImageHandler(_ req: Request) throws -> Future<ImageUploadResponse> {
-        try req.authorizedUser().flatMap { user in
+        return try req.authorizedUser().flatMap { (user) -> Future<ImageUploadResponse> in
             return try req.content
                 .decode(ImageUpload.self)
-                .flatMap { imageData in
+                .map(to: ImageUploadResponse.self) { (imageData) -> ImageUploadResponse in
                     let name = try "\(user.requireID())-\(UUID().uuidString).jpg"
                     let path = try self.path(req, forImageNamed: name)
                     
@@ -31,7 +31,7 @@ struct ImageController: RouteCollection {
                                              contents: imageData.picture,
                                              attributes: nil)
                     
-                    return Future.map(on: req) { ImageUploadResponse(fileName: name) }
+                    return ImageUploadResponse(fileName: name)
             }
         }
     }
