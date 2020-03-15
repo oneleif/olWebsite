@@ -5,6 +5,17 @@ orbs:
   aws-cli: circleci/aws-cli@0.1.20
 
 commands:
+  build-docker-image:
+    parameters:
+      environment:
+        type: string
+    steps:
+      - setup_remote_docker
+      - run:
+          name: Build docker release image
+          command: |
+            docker build -t oneleif-api:latest -f web.Dockerfile --build-arg env=<< parameters.environment >>  .
+            docker tag oneleif-api:latest oneleif-api:$CIRCLE_SHA1
   deploy-to-aws:
     parameters:
       environment:
@@ -12,12 +23,8 @@ commands:
         default: staging
     steps:
       - checkout
-      - setup_remote_docker
-      - run:
-          name: Build docker release image
-          command: |
-            docker build -t oneleif-api:latest -f web.Dockerfile --build-arg env=<< parameters.environment >>  .
-            docker tag oneleif-api:latest oneleif-api:$CIRCLE_SHA1
+      - build-docker-image:
+          environment: << parameters.environment >>
       - run:
           name: Create revision bundle
           command: |
@@ -78,6 +85,14 @@ jobs:
           name: Compile code with optimizations
           command: swift build -c release
 
+  test-docker-image:
+    docker:
+      - image: circleci/golang:latest
+    steps:
+      - checkout
+      - build-docker-image:
+          environment: staging
+
   build-and-deploy-staging:
     docker:
       - image: circleci/golang:latest
@@ -98,10 +113,13 @@ workflows:
     jobs:
       - test
       - test-release
-      - build-and-deploy-staging:
+      - test-docker-image:
           requires:
             - test
             - test-release
+      - build-and-deploy-staging:
+          requires:
+            - test-docker-image
           filters:
             branches:
               only:
@@ -109,8 +127,7 @@ workflows:
           context: oneleif-aws
       - build-and-deploy-production:
           requires:
-            - test
-            - test-release
+            - test-docker-image
           filters:
             branches:
               only:
