@@ -9,6 +9,8 @@ import FluentPostgreSQL
 import Vapor
 
 final class AccessToken: PostgreSQLModel {
+    typealias Database = PostgreSQLDatabase
+    
     var id: Int?
     
     var userId: User.ID

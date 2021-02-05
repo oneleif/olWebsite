@@ -25,6 +25,8 @@ struct SocialInformation: Content {
 }
 
 final class User: PostgreSQLModel {
+    typealias Database = PostgreSQLDatabase
+    
     var id: Int?
     // Auth Information
     var email: String

@@ -3,6 +3,8 @@ import Vapor
 import JWT
 
 final class RefreshToken: PostgreSQLModel {
+    typealias Database = PostgreSQLDatabase
+    
     var id: Int?
     
     fileprivate enum Constants {
