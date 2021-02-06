@@ -10,6 +10,8 @@ import Vapor
 import Authentication
 
 final class PostItem: PostgreSQLModel {
+    typealias Database = PostgreSQLDatabase
+    
     var id: Int?
     let title: String
     let description: String

@@ -11,7 +11,7 @@ let package = Package(
         .package(url: "https://github.com/vapor/vapor.git", from: "3.0.0"),
         .package(url: "https://github.com/vapor/fluent-postgresql.git", from: "1.0.0"),
         .package(url: "https://github.com/vapor/auth.git", from: "2.0.0"),
-        .package(url: "https://github.com/vapor-community/Imperial.git", from: "0.7.1"),
+        .package(url: "https://github.com/vapor-community/Imperial.git", .exact("0.7.3")),
         .package(url: "https://github.com/vapor/crypto.git", from: "3.0.0"),
         .package(url: "https://github.com/vapor/jwt.git", from: "3.0.0"),
     ],

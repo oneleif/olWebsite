@@ -7,10 +7,10 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
     // Register providers first
     try services.register(FluentPostgreSQLProvider())
     try services.register(AuthenticationProvider())
-        
+    
     /// Create default content config
     var contentConfig = ContentConfig.default()
-
+    
     /// Create custom JSON encoder
     let jsonEncoder = JSONEncoder()
     let jsonDecoder = JSONDecoder()
@@ -23,7 +23,7 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
     
     jsonEncoder.dateEncodingStrategy = .formatted(formatter)
     jsonDecoder.dateDecodingStrategy = .formatted(formatter)
-
+    
     /// Register JSON encoder and content config
     contentConfig.use(encoder: jsonEncoder, for: .json)
     contentConfig.use(decoder: jsonDecoder, for: .json)
@@ -38,7 +38,7 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
     // Register middleware
     var middlewares = MiddlewareConfig() // Create _empty_ middleware config
     middlewares.use(FileMiddleware.self) // Serves files from `Public/` directory
-
+    
     let corsConfiguration = CORSMiddleware.Configuration(
         allowedOrigin: .all,
         allowedMethods: [.GET, .POST, .PUT, .OPTIONS, .DELETE, .PATCH],
@@ -51,22 +51,32 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
     services.register(middlewares)
     
     config.prefer(MemoryKeyedCache.self, for: KeyedCache.self)
-
+    
     // Configure a PostgreSQL database
+    // https://martinlasek.medium.com/tutorial-how-to-use-postgresql-efb62a434cc5
+    // https://stackoverflow.com/questions/13573204/psql-could-not-connect-to-server-no-such-file-or-directory-mac-os-x
+    // # Steps
+    // brew install postgresql
+    // brew services start postgresql
+    // createdb oneleif-development;
+    // Update psql username to output of `whoami`
+    // `username: Environment.get("DB_USER") ?? "USERNAME_HERE"`
+    // Set psql password to nil
+    // `password: Environment.get("DB_PASSWORD")`
     let config = PostgreSQLDatabaseConfig(hostname: Environment.get("DB_HOST") ?? "localhost", 
-                                          port: Int(Environment.get("DB_PORT") ?? "") ?? 5432, 
-                                          username: Environment.get("DB_USER") ?? "oneleif", 
+                                          port: Int(Environment.get("DB_PORT") ?? "") ?? 5432,
+                                          username: Environment.get("DB_USER") ?? "oneleif",
                                           database: Environment.get("DB_NAME") ?? "oneleif-\(env.name)", 
-                                          password: Environment.get("DB_PASSWORD") ?? "root", 
+                                          password: Environment.get("DB_PASSWORD") ?? "root",
                                           transport: .cleartext)
-
+    
     let postgres = PostgreSQLDatabase(config: config)
     
     // Register the configured PostgreSQL database to the database config.
     var databases = DatabasesConfig()
     databases.add(database: postgres, as: .psql)
     services.register(databases)
-
+    
     
     if env == .testing {
         var commandConfig = CommandConfig()
